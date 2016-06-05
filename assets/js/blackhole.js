@@ -2,7 +2,6 @@
 window.onload = function() {
     document.getElementById("finish").onclick = showStart;
     document.getElementById("start").onclick = showGame;
-    startGame();
 }
 
 function showGame() {
@@ -20,7 +19,6 @@ var sprite;
 function startGame() {
     myGameArea.start();
     sprite = new component(50, 50, 50, 50, "red");
-
 }
 
 function component(x, y, width, height, color) {
