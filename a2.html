@@ -2,25 +2,20 @@
 <html>
     <head>
         <meta charset="utf-8">
+        <meta name="title" content="Blackhole">
         <meta name="description" content="Assignment 2 for CSC309">
         <meta name="author" content="Nathan and Barry">
         <!-- css -->
         <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
         <!-- javascript -->
-        <script>
-function show(shown, hidden) {
-  document.getElementById(shown).style.display='block';
-  document.getElementById(hidden).style.display='none';
-}
-</script>
-        <!--<script src="assets/js/blackhole.js" type="text/javascript"></script>-->
+        <script src="assets/js/blackhole.js" type="text/javascript"></script>
     </head>
     <body>
         <section id="start-page">
             <div class="box">
                 <h2 id="title">Blackhole</h2>
                 <h2 id="high-score">High Score: </h2>
-                <button onclick="show('game-page', 'start-page');" class="button1" id="start">Start</button>
+                <button class="button1" id="start">Start</button>
             </div>
         </section>
         <section id="game-page">
@@ -28,7 +23,7 @@ function show(shown, hidden) {
                 <h2 id="current-level">Level: </h3>
                 <h2 id="current-score">Score: </h3>
                 <button class="button2" id="next">Next</button>
-                <button onclick="show('start-page', 'game-page');" class="button3" id="finish">Finish</button>
+                <button class="button3" id="finish">Finish</button>
             </div>
         </section>
     </body>

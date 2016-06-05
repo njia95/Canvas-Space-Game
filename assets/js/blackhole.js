@@ -1,17 +1,17 @@
 // called when page loads and sets up event handlers
-function pageLoad() {
-    alert("a");
-    document.getElementById("start").onclick = show("start-page", "game-page");
-    alert("b");
-    document.getElementById("finish").onclick = show("game-page", "start-page");
+window.onload = function() {
+    document.getElementById("finish").onclick = showStart;
+    document.getElementById("start").onclick = showGame;
 }
 
 
-function show(shown, hidden) {
-    alert("la");
-  document.getElementById(shown).style.display='block';
-  alert("sa");
-  document.getElementById(hidden).style.display='none';
+function showGame() {
+    document.getElementById("game-page").style.display = "block";
+    document.getElementById("start-page").style.display = "none";
 }
 
-window.onload = pageLoad;
+function showStart() {
+    document.getElementById("start-page").style.display = "block";
+    document.getElementById("game-page").style.display = "none";
+}
+
