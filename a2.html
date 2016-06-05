@@ -5,6 +5,7 @@
         <meta name="title" content="Blackhole">
         <meta name="description" content="Assignment 2 for CSC309">
         <meta name="author" content="Nathan and Barry">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <!-- css -->
         <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
         <!-- javascript -->
@@ -19,7 +20,10 @@
             </div>
         </section>
         <section id="game-page">
-            <div class="box">
+            <canvas id=“canvas” width="1000" height="640">
+            <!-- Your browser doesn't support canvas! -->
+            </canvas>
+            <div class="box game-box">
                 <h2 id="current-level">Level: </h3>
                 <h2 id="current-score">Score: </h3>
                 <button class="button2" id="next">Next</button>
