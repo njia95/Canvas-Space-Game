@@ -19,13 +19,12 @@ function startGame() {
     myGameArea.start();
 }
 
-var myGameArea = {
-    canvas : document.createElement("canvas"),
+var myGameArea = { // obejct 
+    // find the canvas element
+    canvas : document.getElementById("canvas"),
     start : function() {
-        this.canvas.width = 480;
-        this.canvas.height = 270;
+        // create a drawing object
         this.context = this.canvas.getContext("2d");
-        document.body.insertBefore(this.canvas, document.body.childNodes[0]);
     }
 }
 
