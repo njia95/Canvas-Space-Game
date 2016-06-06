@@ -16,12 +16,14 @@ function showStart() {
 }
 
 var redSprite, blueSprite, yellowSprite;
+var myScore;
 
 function startGame() {
     myGameArea.start();
     redSprite = new component(50, 50, 10, 10, "red");
     blueSprite = new component(50, 50, 10, 110, "blue");
     yellowSprite = new component(50, 50, 50, 60, "yellow"); 
+    myScore = new component("30px", "Consolas", 280, 40, "black", "text");
 }
 
 var myGameArea = {
@@ -33,6 +35,8 @@ var myGameArea = {
         var gamePageNode = document.getElementById("game-page");
         // insert canvas as the first child of game page
         gamePageNode.insertBefore(this.canvas, gamePageNode.childNodes[0]);
+        
+        this.frameNo = 0;
         // updateGameArea runs every 20th millisecond (50 times per second)
         this.interval = setInterval(updateGameArea, 20);
     },
@@ -41,21 +45,35 @@ var myGameArea = {
     }
 }
 
-function component(width, height, x, y, color) {
+function component(width, height, x, y, color, type) {
     this.width = width;
     this.height = height;
     this.x = x;
     this.y = y;
     this.color = color;
+    this.type = type;
     this.update = function(){
         ctx = myGameArea.context;
-        ctx.fillStyle = color;
-        ctx.fillRect(this.x, this.y, this.width, this.height);
+        
+        if (this.type == "text") {
+            ctx.font = this.width + " " + this.height;
+            ctx.fillStyle = color;
+            ctx.fillText(this.text, this.x, this.y);
+        } else {
+            ctx.fillStyle = color;
+            ctx.fillRect(this.x, this.y, this.width, this.height);            
+        }
+
     }
 }
 
 function updateGameArea() {
     myGameArea.clear();
+    myGameArea.frameNo += 1;
+    
+    myScore.text = "SCORE: " + myGameArea.frameNo;
+    myScore.update();
+    
     // move right 1 unit every time we update the canvas
     redSprite.x += 1;
     redSprite.update();
