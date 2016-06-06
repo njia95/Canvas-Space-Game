@@ -75,17 +75,13 @@ function component(width, height, x, y, speedX, speedY, color, type) {
     
     this.check = function () {
         var bottom = myGameArea.canvas.height - this.height;
-        if (this.y > bottom) {
-            this.y = bottom;
-        } else if (this.y < 0) {
-            this.y = 0;
+        if (this.y > bottom || this.y < 0) {
+            this.speedY = 0 - this.speedY;
         }
         
         var right = myGameArea.canvas.width - this.width;
-        if (this.x > right) {
-            this.x = right;
-        } else if (this.x < 0) {
-            this.x = 0;
+        if (this.x > right || this.x < 0) {
+            this.speedX = 0 - this.speedX;
         }
     }
 }
