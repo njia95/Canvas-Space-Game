@@ -2,6 +2,7 @@
 window.onload = function() {
     document.getElementById("finish").onclick = showStart;
     document.getElementById("start").onclick = showGame;
+    startGame();
 }
 
 function showGame() {
@@ -23,7 +24,7 @@ function startGame() {
 
 function component(x, y, width, height, color) {
     this.x = x;
-    this.y = w;
+    this.y = y;
     this.width = width;
     this.height = height;
     this.color = color;
@@ -32,11 +33,14 @@ function component(x, y, width, height, color) {
     ctx.fillRect(this.x, this.y, this.width, this.height, this.color);
 }
 
-var myGameArea = { // obejct
-    // find the canvas element
-    canvas : document.getElementById("canvas"),
+var myGameArea = {
+    canvas : document.createElement("canvas"),
     start : function() {
-        // create a drawing object
+        this.canvas.width = 1000;
+        this.canvas.height = 640;
         this.context = this.canvas.getContext("2d");
+        var gamePageNode = document.getElementById("game-page");
+        // insert canvas as the first child of game page
+        gamePageNode.insertBefore(this.canvas, gamePageNode.childNodes[0]);
     }
 }
