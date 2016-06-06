@@ -62,8 +62,8 @@ class Component {
             ctx.fillText(this.text, this.x, this.y);
         } else if (this.type == "image") { // draw svg
             this.image = new Image();
-            this.image.onload = function() {
-                ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+            window.onload = function() {
+                ctx.drawImage(this.image, this.x, this.y);
             }
             this.image.src = this.color;
         } else {
@@ -114,7 +114,7 @@ function startGame() {
     sprites.push(new Component(25, 25, 80, 110, 1, -1, "blue"));
     sprites.push(new Component(25, 25, 50, 60, -1, 1, "yellow"));
     
-    blackholes.push(new Component(25, 25, 70, 120, 0, 0, "assets/img/black.svg", "image"));
+    blackholes.push(new Component(25, 25, 0, 0, 0, 0, "assets/img/black.svg", "image"));
 }
 
 var GameArea = {
