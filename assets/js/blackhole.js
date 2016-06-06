@@ -60,6 +60,12 @@ class Component {
             ctx.font = this.width + " " + this.height;
             ctx.fillStyle = this.color;
             ctx.fillText(this.text, this.x, this.y);
+        } else if (this.type == "image") { // draw svg
+            this.image = new Image();
+            this.image.onload = function() {
+                ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+            }
+            this.image.src = this.color;
         } else {
             // draw square
             // ctx.fillStyle = this.color;
@@ -93,18 +99,22 @@ class Component {
 }
 
 
-var myScore, sprites;
+var myScore, sprites, blackholes;
 
 function startGame() {
     GameArea.start();
+ 
+    myScore = new Component("30px", "Consolas", 280, 40, 0, 0, "black", "text");   
     
     sprites = new Array();
-    // insert objects into the array
-    sprites.push(new Component(50, 50, 70, 90, 1, 1, "red"));
-    sprites.push(new Component(50, 50, 80, 110, 1, -1, "blue"));
-    sprites.push(new Component(50, 50, 50, 60, -1, 1, "yellow"));
+    blackholes = new Array();
     
-    myScore = new Component("30px", "Consolas", 280, 40, 0, 0, "black", "text");
+    // insert objects into the sprites
+    sprites.push(new Component(25, 25, 70, 90, 1, 1, "red"));
+    sprites.push(new Component(25, 25, 80, 110, 1, -1, "blue"));
+    sprites.push(new Component(25, 25, 50, 60, -1, 1, "yellow"));
+    
+    blackholes.push(new Component(25, 25, 70, 120, 0, 0, "assets/img/black.svg", "image"));
 }
 
 var GameArea = {
@@ -133,8 +143,12 @@ function updateGameArea() {
     myScore.text = "SCORE: " + GameArea.frameNo;
     myScore.draw();
     
-    for (var i=0; i < sprites.length; i ++) {
+    for (var i = 0; i < sprites.length; i++) {
         sprites[i].newPos();
         sprites[i].draw();
+    }
+    
+    for (var i = 0; i < blackholes.length; i++) {
+        blackholes[i].draw();
     }
 }
