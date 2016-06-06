@@ -20,10 +20,10 @@ var myScore;
 
 function startGame() {
     myGameArea.start();
-    redSprite = new component(50, 50, 10, 10, "red");
-    blueSprite = new component(50, 50, 10, 110, "blue");
-    yellowSprite = new component(50, 50, 50, 60, "yellow"); 
-    myScore = new component("30px", "Consolas", 280, 40, "black", "text");
+    redSprite = new component(50, 50, 10, 10, 1, 1, "red");
+    blueSprite = new component(50, 50, 10, 110, 1, -1, "blue");
+    yellowSprite = new component(50, 50, 50, 60, -1, 1, "yellow"); 
+    myScore = new component("30px", "Consolas", 280, 40, 0, 0, "black", "text");
 }
 
 var myGameArea = {
@@ -45,11 +45,13 @@ var myGameArea = {
     }
 }
 
-function component(width, height, x, y, color, type) {
+function component(width, height, x, y, speedX, speedY, color, type) {
     this.width = width;
     this.height = height;
     this.x = x;
     this.y = y;
+    this.speedX = speedX;
+    this.speedY = speedY;
     this.color = color;
     this.type = type;
     this.update = function(){
@@ -65,6 +67,27 @@ function component(width, height, x, y, color, type) {
         }
 
     }
+    this.newPos = function() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        this.check();
+    }
+    
+    this.check = function () {
+        var bottom = myGameArea.canvas.height - this.height;
+        if (this.y > bottom) {
+            this.y = bottom;
+        } else if (this.y < 0) {
+            this.y = 0;
+        }
+        
+        var right = myGameArea.canvas.width - this.width;
+        if (this.x > right) {
+            this.x = right;
+        } else if (this.x < 0) {
+            this.x = 0;
+        }
+    }
 }
 
 function updateGameArea() {
@@ -74,36 +97,12 @@ function updateGameArea() {
     myScore.text = "SCORE: " + myGameArea.frameNo;
     myScore.update();
     
-    var bottom = myGameArea.canvas.height - redSprite.height;
-    if (redSprite.y > bottom) {
-        redSprite.y = bottom;
-    } else if (redSprite.y < 0) {
-        redSprite.y = 0;
-    } else {
-        // move right 1 unit every time we update the canvas
-        redSprite.y += 1;
-    }
+    redSprite.newPos();
+    redSprite.update();
     
-    var right = myGameArea.canvas.width - redSprite.width;
-    if (redSprite.x > right) {
-        redSprite.x = right;
-    } else if (redSprite.x < 0) {
-        redSprite.x = 0;
-    } else {
-        // move right 1 unit every time we update the canvas
-        redSprite.x += 1;
-    }
-
-   
+    blueSprite.newPos();
+    blueSprite.update();
     
-    blueSprite.x += 1;
-    blueSprite.y -= 1;
-    
-    
-    yellowSprite.x += 1;
-    yellowSprite.y -= 1;
-    
-     redSprite.update();
-     blueSprite.update();
+    yellowSprite.newPos();
     yellowSprite.update();
 }
