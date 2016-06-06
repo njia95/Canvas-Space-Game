@@ -45,35 +45,37 @@ var myGameArea = {
     }
 }
 
-function component(width, height, x, y, speedX, speedY, color, type) {
-    this.width = width;
-    this.height = height;
-    this.x = x;
-    this.y = y;
-    this.speedX = speedX;
-    this.speedY = speedY;
-    this.color = color;
-    this.type = type;
-    this.update = function(){
-        ctx = myGameArea.context;
-        
+class component {
+    constructor(width, height, x, y, speedX, speedY, color, type) {
+        this.width = width;
+        this.height = height;
+        this.x = x;
+        this.y = y;
+        this.speedX = speedX;
+        this.speedY = speedY;
+        this.color = color;
+        this.type = type;
+    }
+
+    update() {
+        var ctx = myGameArea.context;
         if (this.type == "text") {
             ctx.font = this.width + " " + this.height;
-            ctx.fillStyle = color;
+            ctx.fillStyle = this.color;
             ctx.fillText(this.text, this.x, this.y);
         } else {
-            ctx.fillStyle = color;
+            ctx.fillStyle = this.color;
             ctx.fillRect(this.x, this.y, this.width, this.height);            
         }
-
     }
-    this.newPos = function() {
+    
+    newPos() {
         this.x += this.speedX;
         this.y += this.speedY;
         this.check();
     }
     
-    this.check = function () {
+    check() {
         var bottom = myGameArea.canvas.height - this.height;
         if (this.y > bottom || this.y < 0) {
             this.speedY = 0 - this.speedY;
