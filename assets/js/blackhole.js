@@ -74,15 +74,36 @@ function updateGameArea() {
     myScore.text = "SCORE: " + myGameArea.frameNo;
     myScore.update();
     
-    // move right 1 unit every time we update the canvas
-    redSprite.x += 1;
-    redSprite.update();
+    var bottom = myGameArea.canvas.height - redSprite.height;
+    if (redSprite.y > bottom) {
+        redSprite.y = bottom;
+    } else if (redSprite.y < 0) {
+        redSprite.y = 0;
+    } else {
+        // move right 1 unit every time we update the canvas
+        redSprite.y += 1;
+    }
+    
+    var right = myGameArea.canvas.width - redSprite.width;
+    if (redSprite.x > right) {
+        redSprite.x = right;
+    } else if (redSprite.x < 0) {
+        redSprite.x = 0;
+    } else {
+        // move right 1 unit every time we update the canvas
+        redSprite.x += 1;
+    }
+
+   
     
     blueSprite.x += 1;
     blueSprite.y -= 1;
-    blueSprite.update();
+    
     
     yellowSprite.x += 1;
     yellowSprite.y -= 1;
+    
+     redSprite.update();
+     blueSprite.update();
     yellowSprite.update();
 }
