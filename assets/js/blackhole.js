@@ -59,14 +59,19 @@ class Component {
 }
 
 
-var redSprite, blueSprite, yellowSprite;
-var myScore;
+var redSprite, blueSprite, yellowSprite, myScore, sprites;
 
 function startGame() {
     GameArea.start();
+    sprites = new Array();
+    
     redSprite = new Component(50, 50, 10, 10, 1, 1, "red");
+    sprites.push(redSprite);
     blueSprite = new Component(50, 50, 10, 110, 1, -1, "blue");
-    yellowSprite = new Component(50, 50, 50, 60, -1, 1, "yellow"); 
+    sprites.push(blueSprite);
+    yellowSprite = new Component(50, 50, 50, 60, -1, 1, "yellow");
+    sprites.push(yellowSprite);
+    
     myScore = new Component("30px", "Consolas", 280, 40, 0, 0, "black", "text");
 }
 
@@ -96,12 +101,8 @@ function updateGameArea() {
     myScore.text = "SCORE: " + GameArea.frameNo;
     myScore.update();
     
-    redSprite.newPos();
-    redSprite.update();
-    
-    blueSprite.newPos();
-    blueSprite.update();
-    
-    yellowSprite.newPos();
-    yellowSprite.update();
+    for (var i=0; i < sprites.length; i ++) {
+        sprites[i].newPos();
+        sprites[i].update();
+    }
 }
