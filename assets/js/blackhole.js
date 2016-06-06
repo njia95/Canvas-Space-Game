@@ -2,6 +2,8 @@
 window.onload = function() {
     document.getElementById("finish").onclick = showStart;
     document.getElementById("start").onclick = showGame;
+    document.getElementById("timerStart").onclick = startCount;
+    document.getElementById("timerPause").onclick = stopCount;
     startGame();
 }
 
@@ -15,6 +17,31 @@ function showStart() {
     document.getElementById("game-page").style.display = "none";
 }
 
+
+// timer
+var time = 60;
+var t;
+var timerOn = 0;
+
+function timedCount() {
+    document.getElementById("timer").value = time;
+    time--;
+    t = setTimeout(function() { timedCount() }, 1000);
+}
+
+function startCount() {
+    if (!timerOn) {
+        timerOn = 1;
+        timedCount();
+    }
+}
+
+function stopCount() {
+    clearTimeout(t);
+    timerOn = 0;
+}
+
+// main
 class Component {
     constructor(width, height, x, y, speedX, speedY, color, type) {
         this.width = width;
