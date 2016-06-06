@@ -27,50 +27,55 @@ class Component {
         this.type = type;
     }
 
-    update() {
+    draw() {
         var ctx = GameArea.context;
-        if (this.type == "text") {
+        if (this.type == "text") { // draw score
             ctx.font = this.width + " " + this.height;
             ctx.fillStyle = this.color;
             ctx.fillText(this.text, this.x, this.y);
         } else {
+            // draw square
+            // ctx.fillStyle = this.color;
+            // ctx.fillRect(this.x, this.y, this.width, this.height);
+            
+            // draw circles
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.width, 0, 2*Math.PI);
             ctx.fillStyle = this.color;
-            ctx.fillRect(this.x, this.y, this.width, this.height);            
+            ctx.fill();     
         }
     }
     
-    newPos() {
+    newPos() { // change position
         this.x += this.speedX;
         this.y += this.speedY;
         this.check();
     }
     
-    check() {
-        var bottom = GameArea.canvas.height - this.height;
-        if (this.y > bottom || this.y < 0) {
-            this.speedY = 0 - this.speedY;
+    check() { // check for boundary conditions
+        var right = GameArea.canvas.width - this.width;
+        if (this.x > right || this.x < this.width) {
+            this.speedX = 0 - this.speedX;
         }
         
-        var right = GameArea.canvas.width - this.width;
-        if (this.x > right || this.x < 0) {
-            this.speedX = 0 - this.speedX;
+        var bottom = GameArea.canvas.height - this.height;
+        if (this.y > bottom || this.y < this.height) {
+            this.speedY = 0 - this.speedY;
         }
     }
 }
 
 
-var redSprite, blueSprite, yellowSprite, myScore, sprites;
+var myScore, sprites;
 
 function startGame() {
     GameArea.start();
-    sprites = new Array();
     
-    redSprite = new Component(50, 50, 10, 10, 1, 1, "red");
-    sprites.push(redSprite);
-    blueSprite = new Component(50, 50, 10, 110, 1, -1, "blue");
-    sprites.push(blueSprite);
-    yellowSprite = new Component(50, 50, 50, 60, -1, 1, "yellow");
-    sprites.push(yellowSprite);
+    sprites = new Array();
+    // insert objects into the array
+    sprites.push(new Component(50, 50, 70, 90, 1, 1, "red"));
+    sprites.push(new Component(50, 50, 80, 110, 1, -1, "blue"));
+    sprites.push(new Component(50, 50, 50, 60, -1, 1, "yellow"));
     
     myScore = new Component("30px", "Consolas", 280, 40, 0, 0, "black", "text");
 }
@@ -99,10 +104,10 @@ function updateGameArea() {
     GameArea.frameNo += 1;
     
     myScore.text = "SCORE: " + GameArea.frameNo;
-    myScore.update();
+    myScore.draw();
     
     for (var i=0; i < sprites.length; i ++) {
         sprites[i].newPos();
-        sprites[i].update();
+        sprites[i].draw();
     }
 }
