@@ -169,6 +169,27 @@ function startGame() {
             } else {
                 i = -1;
             }
+        } else if (purpose == "colour"){
+            var colourNum = Math.floor((Math.random() * 5));
+            switch (colourNum) {
+                case 0:
+                    i = "red";
+                    break;
+                case 1:
+                    i = "orange";
+                    break;
+                case 2:
+                    i = "yellow";
+                    break;
+                case 3:
+                    i = "green";
+                    break;
+                case 4:
+                    i = "blue";
+                    break;
+                default:
+                    i = "black";
+            }
         }
         return i;
     }
@@ -190,12 +211,14 @@ function startGame() {
         allPos.push(empty);
     }
 
+    // generating 10 shapes
     while (numSprites < 10) {
         var currShape = randgen("shape");
         var currX = randgen("x");
         var currY = randgen("y");
         var currSpeedX = randgen("speed");
         var currSpeedY = randgen("speed");
+
         var pos = new Array();
         pos.push(currX, currY);
         while (samePos(pos, allPos)) {
@@ -203,9 +226,9 @@ function startGame() {
             currY = randgen("y");
         }
         allPos.push(pos);
+
         var currWidth;
         var currHeight;
-
         if (currShape == "circle") {
             currWidth = 25;
             currHeight = 25;
@@ -213,7 +236,9 @@ function startGame() {
             currWidth = 50;
             currHeight = 50;
         }
-        sprites.push(new Component(currWidth, currHeight, currX, currY, currSpeedX, currSpeedY, "red", "sprite", currShape));
+
+        var currColour =randgen("colour");
+        sprites.push(new Component(currWidth, currHeight, currX, currY, currSpeedX, currSpeedY, currColour, "sprite", currShape));
         numSprites++;
     }
 
