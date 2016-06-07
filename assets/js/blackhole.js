@@ -63,10 +63,9 @@ class Component {
             ctx.fillText(this.text, this.x, this.y);
         } else if (this.type == "image") { // draw svg
             this.image = new Image();
-            window.onload = function() {
-                ctx.drawImage(this.image, this.x, this.y);
-            }
             this.image.src = this.color;
+            ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+            
         } else {
             // draw square
             // ctx.fillStyle = this.color;
@@ -253,7 +252,7 @@ function startGame() {
         numSprites++;
     }
 
-    blackholes.push(new Component(25, 25, 0, 0, 0, 0, "assets/img/black.svg", "image"));
+    blackholes.push(new Component(50, 50, 0, 0, 0, 0, "assets/img/black.svg", "image"));
 }
 
 var GameArea = {
