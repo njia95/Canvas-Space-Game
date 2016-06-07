@@ -149,7 +149,7 @@ function startGame() {
     // random generator
     function randgen(purpose) {
         var i;
-
+        // for shapes
         if (purpose == "shape") {
             i = Math.floor((Math.random() * 3));
             if (i == 0) {
@@ -159,16 +159,20 @@ function startGame() {
             } else {
                 i = "star";
             }
+        // for x starting position
         } else if (purpose == "x") {
             i = Math.floor((Math.random() * 950));
+        // for y starting position
         } else if (purpose == "y") {
             i = Math.floor((Math.random() * 560));
+        // for speed
         } else if (purpose == "speed"){
-            if (Math.random() >= 0.5) {
+            if (Math.random() >= 0.25) {
                 i = 1;
             } else {
                 i = -1;
             }
+        // for colour only 5 though
         } else if (purpose == "colour"){
             var colourNum = Math.floor((Math.random() * 5));
             switch (colourNum) {
@@ -204,7 +208,7 @@ function startGame() {
         return false;
     }
 
-    var numSprites = 0;
+    // store all the starting positions of the shapes
     var allPos = new Array();
     for (var i = 0; i < 10; i++) {
         var empty = [-1, -1];
@@ -212,6 +216,7 @@ function startGame() {
     }
 
     // generating 10 shapes
+    var numSprites = 0;
     while (numSprites < 10) {
         var currShape = randgen("shape");
         var currX = randgen("x");
@@ -221,12 +226,14 @@ function startGame() {
 
         var pos = new Array();
         pos.push(currX, currY);
+        // regenerate starting position if it was alrea picked
         while (samePos(pos, allPos)) {
             currX = randgen("x");
             currY = randgen("y");
         }
         allPos.push(pos);
 
+        // setting the values according to the shapes
         var currWidth;
         var currHeight;
         if (currShape == "circle") {
@@ -237,24 +244,14 @@ function startGame() {
             currHeight = 50;
         }
 
+        // generate random colour
         var currColour =randgen("colour");
+
+        // create the sprite
         sprites.push(new Component(currWidth, currHeight, currX, currY, currSpeedX, currSpeedY, currColour, "sprite", currShape));
+        
         numSprites++;
     }
-
-    // insert objects into the sprites
-    // sprites.push(new Component(25, 25, 70, 90, 1, 1, "red", "sprite", "circle"));
-    // sprites.push(new Component(25, 25, 80, 110, 1, -1, "blue", "sprite", "circle"));
-    // sprites.push(new Component(25, 25, 300, 150, 1, -1, "orange", "sprite", "circle"));
-    // sprites.push(new Component(25, 25, 300, 150, 1, -1, "orange", "sprite", "circle"));
-    // sprites.push(new Component(50, 50, 100, 100, -1, 1, "green", "sprite", "square"));
-    // sprites.push(new Component(50, 50, 200, 50, -1, -1, "black", "sprite", "square"));
-    // sprites.push(new Component(50, 50, 200, 50, -1, -1, "black", "sprite", "square"));
-    // sprites.push(new Component(50, 50, 330, 250, -1, -1, "yellow", "sprite", "star"));
-    // sprites.push(new Component(50, 50, 330, 250, -1, -1, "yellow", "sprite", "star"));
-    // sprites.push(new Component(50, 50, 330, 250, -1, -1, "yellow", "sprite", "star"));
-
-
 
     blackholes.push(new Component(25, 25, 0, 0, 0, 0, "assets/img/black.svg", "image"));
 }
