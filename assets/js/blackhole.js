@@ -148,8 +148,8 @@ function startGame() {
 
     sprites = new Array();
     blackholes = new Array();
-
-    randomWidth = new Array();
+    
+    timedCount();
 
     // random generator
     function randgen(purpose) {
