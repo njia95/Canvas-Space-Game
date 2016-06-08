@@ -65,7 +65,7 @@ class Component {
             this.image = new Image();
             this.image.src = this.color;
             ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-            
+
         } else {
             // draw square
             // ctx.fillStyle = this.color;
@@ -90,24 +90,24 @@ class Component {
                 var innerRadius = 10;
 
                 ctx.beginPath();
-                ctx.moveTo(this.x,this.y-outerRadius)
-                for(var i=0;i<spikes;i++){
-                    x=this.x+Math.cos(rot)*outerRadius;
-                    y=this.y+Math.sin(rot)*outerRadius;
+                ctx.moveTo(this.x,this.y - outerRadius)
+                for (var i = 0; i < spikes; i++){
+                    x = this.x + Math.cos(rot)*outerRadius;
+                    y = this.y + Math.sin(rot)*outerRadius;
                     ctx.lineTo(x,y)
                     rot+=step
 
                     x = this.x + Math.cos(rot)*innerRadius;
                     y = this.y + Math.sin(rot)*innerRadius;
                     ctx.lineTo(x,y)
-                    rot+=step
+                    rot += step
                 }
-                ctx.lineTo(this.x,this.y-outerRadius);
+                ctx.lineTo(this.x,this.y - outerRadius);
                 ctx.closePath();
-                ctx.lineWidth=5;
-                ctx.strokeStyle=this.color;
+                ctx.lineWidth = 5;
+                ctx.strokeStyle = this.color;
                 ctx.stroke();
-                ctx.fillStyle=this.color;
+                ctx.fillStyle = this.color;
                 ctx.fill();
             }
         }
@@ -121,13 +121,22 @@ class Component {
 
     check() { // check for boundary conditions
         var right = GameArea.canvas.width - this.width;
-        if (this.x > right || this.x < this.width) {
-            this.speedX = 0 - this.speedX;
-        }
-
         var bottom = GameArea.canvas.height - this.height;
-        if (this.y > bottom || this.y < this.height) {
-            this.speedY = 0 - this.speedY;
+
+        if (this.shape == "square") {
+            if (this.x > right || this.x < this.width - 50) {
+                this.speedX = 0 - this.speedX ;
+            }
+            if (this.y > bottom || this.y < this.height - 50) {
+                this.speedY = 0 - this.speedY;
+            }
+        } else {
+            if (this.x > right || this.x < this.width) {
+                this.speedX = 0 - this.speedX;
+            }
+            if (this.y > bottom || this.y < this.height) {
+                this.speedY = 0 - this.speedY;
+            }
         }
     }
 }
@@ -166,7 +175,7 @@ function startGame() {
             i = Math.floor((Math.random() * 560));
         // for speed
         } else if (purpose == "speed"){
-            if (Math.random() >= 0.25) {
+            if (Math.random() >= 0.5) {
                 i = 1;
             } else {
                 i = -1;
@@ -235,12 +244,12 @@ function startGame() {
         // setting the values according to the shapes
         var currWidth;
         var currHeight;
-        if (currShape == "circle") {
-            currWidth = 25;
-            currHeight = 25;
-        } else {
+        if (currShape == "square") {
             currWidth = 50;
             currHeight = 50;
+        } else {
+            currWidth = 25;
+            currHeight = 25;
         }
 
         // generate random colour
@@ -248,7 +257,7 @@ function startGame() {
 
         // create the sprite
         sprites.push(new Component(currWidth, currHeight, currX, currY, currSpeedX, currSpeedY, currColour, "sprite", currShape));
-        
+
         numSprites++;
     }
 
