@@ -41,8 +41,8 @@ function stopCount() {
     timerOn = 0;
 }
 
-var MAXWIDTH = 1000;
-var MAXHEIGHT = 640;
+const MAXWIDTH = 1000;
+const MAXHEIGHT = 640;
 // main
 class Component {
     constructor(width, height, x, y, speedX, speedY, color, type, shape) {
@@ -258,7 +258,10 @@ function startGame() {
         numSprites++;
     }
 
-    blackholes.push(new Component(50, 50, 0, 0, 0, 0, "assets/img/black.svg", "image"));
+    
+    blackholes.push(new Component(50, 50, randgen("x"), randgen("y"), 0, 0, "assets/img/black.svg", "image"));
+    blackholes.push(new Component(50, 50, randgen("x"), randgen("y"), 0, 0, "assets/img/blue.svg", "image"));
+    blackholes.push(new Component(50, 50, randgen("x"), randgen("y"), 0, 0, "assets/img/purple.svg", "image"));
 }
 
 var GameArea = {
