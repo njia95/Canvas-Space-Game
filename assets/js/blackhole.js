@@ -41,6 +41,8 @@ function stopCount() {
     timerOn = 0;
 }
 
+var MAXWIDTH = 1000;
+var MAXHEIGHT = 640;
 // main
 class Component {
     constructor(width, height, x, y, speedX, speedY, color, type, shape) {
@@ -67,11 +69,6 @@ class Component {
             ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
 
         } else {
-            // draw square
-            // ctx.fillStyle = this.color;
-            // ctx.fillRect(this.x, this.y, this.width, this.height);
-
-            // draw circles
             if (this.shape == "circle") {
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.width, 0, 2*Math.PI);
@@ -169,10 +166,10 @@ function startGame() {
             }
         // for x starting position
         } else if (purpose == "x") {
-            i = Math.floor((Math.random() * 950));
+            i = Math.floor(Math.random() * (MAXWIDTH - 100 + 1)) + 50;
         // for y starting position
         } else if (purpose == "y") {
-            i = Math.floor((Math.random() * 560));
+            i = Math.floor(Math.random() * (MAXHEIGHT - 100 + 1)) + 50;
         // for speed
         } else if (purpose == "speed"){
             if (Math.random() >= 0.5) {
@@ -267,8 +264,8 @@ function startGame() {
 var GameArea = {
     canvas : document.createElement("canvas"),
     start() {
-        this.canvas.width = 1000;
-        this.canvas.height = 640;
+        this.canvas.width = MAXWIDTH;
+        this.canvas.height = MAXHEIGHT;
         this.context = this.canvas.getContext("2d");
         let gamePageNode = document.getElementById("game-page");
         // insert canvas as the first child of game page
