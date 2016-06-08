@@ -4,6 +4,7 @@ window.onload = function() {
     document.getElementById("start").onclick = showGame;
     document.getElementById("timerStart").onclick = startCount;
     document.getElementById("timerPause").onclick = stopCount;
+    GameArea.canvas.onclick = removeBlackhole;
     startGame();
 }
 
@@ -301,4 +302,12 @@ if (purpose == "shape") {
     }
 }
 return i;
+}
+
+function removeBlackhole(event) {
+    var xPosition = event.clientX - 10;
+    var yPosition = event.clientY - 10;
+    // for (var i = 0; i < blackholes.length; i++) {
+    //     blackholes[i].draw();
+    // }
 }
