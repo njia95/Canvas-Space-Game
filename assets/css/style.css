@@ -70,3 +70,9 @@ button {
     background-color: #f44336;
     color: white;
 }
+
+#info {
+    position: absolute;
+    top: 5px;
+    left: 550px;
+}

@@ -125,14 +125,14 @@ class Component {
             if (this.x > right || this.x < this.width - 50) {
                 this.speedX = 0 - this.speedX ;
             }
-            if (this.y > bottom || this.y < this.height - 50) {
+            if (this.y > bottom || this.y < this.height) {
                 this.speedY = 0 - this.speedY;
             }
         } else {
             if (this.x > right || this.x < this.width) {
                 this.speedX = 0 - this.speedX;
             }
-            if (this.y > bottom || this.y < this.height) {
+            if (this.y > bottom || this.y < this.height + 50) {
                 this.speedY = 0 - this.speedY;
             }
         }
