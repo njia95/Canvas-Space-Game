@@ -10,6 +10,7 @@ window.onload = function() {
 function showGame() {
     document.getElementById("game-page").style.display = "block";
     document.getElementById("start-page").style.display = "none";
+    timedCount();
 }
 
 function showStart() {
@@ -149,7 +150,7 @@ function startGame() {
     sprites = new Array();
     blackholes = new Array();
     
-    timedCount();
+    
 
     // random generator
     function randgen(purpose) {
@@ -258,10 +259,16 @@ function startGame() {
         numSprites++;
     }
 
+    if (time % 10 == 0) {
+        blackholes.push(new Component(50, 50, randgen("x"), randgen("y"), 0, 0, "assets/img/blue.svg", "image"));
+    } else if (time < 60 && time % 20 == 0) {
+        blackholes.push(new Component(50, 50, randgen("x"), randgen("y"), 0, 0, "assets/img/purple.svg", "image"));
+    } else if (time == 30) {
+        blackholes.push(new Component(50, 50, randgen("x"), randgen("y"), 0, 0, "assets/img/black.svg", "image"));
+    } 
     
-    blackholes.push(new Component(50, 50, randgen("x"), randgen("y"), 0, 0, "assets/img/black.svg", "image"));
-    blackholes.push(new Component(50, 50, randgen("x"), randgen("y"), 0, 0, "assets/img/blue.svg", "image"));
-    blackholes.push(new Component(50, 50, randgen("x"), randgen("y"), 0, 0, "assets/img/purple.svg", "image"));
+    
+    
 }
 
 var GameArea = {
