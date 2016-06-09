@@ -305,9 +305,12 @@ return i;
 }
 
 function removeBlackhole(event) {
-    var xPosition = event.clientX - 10;
-    var yPosition = event.clientY - 10;
-    // for (var i = 0; i < blackholes.length; i++) {
-    //     blackholes[i].draw();
-    // }
+    var clickX = event.clientX - 10;
+    var clickY = event.clientY - 10;
+    
+    for (var i = 0; i < blackholes.length; i++) {
+        if (clickX >= blackholes[i].x - 50 && clickX <= blackholes[i].x + 50 && clickY >= blackholes[i].y - 50 && clickY <= blackholes[i].y + 50) {
+            blackholes.splice(i, 1); // remove one blackhole
+        }
+    }
 }
