@@ -113,6 +113,13 @@ class Component {
     }
 
     newPos() { // change position
+        // for (var i = 0; i < blackholes.length; i++) {
+        //     if (this.x >= blackholes[i].x - 50 && this.x <= blackholes[i].x + 50 && this.y >= blackholes[i].y - 50 && this.y <= blackholes[i].y + 50) {
+        //         var dx = this.x - blackholes[i].x,
+        //         var dy = this.y - blackholes[i].y;
+        //         dist = Math.abs(Math.sqrt(dx * dx + dy * dy));
+        //     }
+        // }
         this.x += this.speedX;
         this.y += this.speedY;
         this.check();
@@ -137,6 +144,7 @@ class Component {
                 this.speedY = 0 - this.speedY;
             }
         }
+           
     }
 }
 
