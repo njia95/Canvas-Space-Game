@@ -32,6 +32,11 @@ button {
     transition-duration: 0.4s;
     cursor: pointer;
 }
+
+#game-page h2 {
+    display: inline-block;
+}
+
 .game-box {
     left: 500px;
     top: 200px;
@@ -74,5 +79,5 @@ button {
 #info {
     position: absolute;
     top: 5px;
-    left: 550px;
+    left: 300px;
 }

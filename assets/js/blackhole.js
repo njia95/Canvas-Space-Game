@@ -163,12 +163,13 @@ class Component {
 }
 
 
-var myScore, score = 0, sprites = new Array(), blackholes = new Array();
+// var myScore
+var myScore = document.getElementById("score");
+var score = parseInt(myScore.value);
+var sprites = new Array(), blackholes = new Array();
 
 function startGame() {
     GameArea.start();
-
-    myScore = new Component("30px", "Consolas", 280, 40, 0, 0, "black", "text");
 
     // check if x and y were the same in the previous position
     function samePos(currPos, allPos) {
@@ -251,8 +252,7 @@ function updateGameArea() {
     GameArea.clear();
     GameArea.frameNo += 1;
     
-    myScore.text = "SCORE: " + score;
-    myScore.draw();
+    myScore.value = score;
 
     for (var i = 0; i < sprites.length; i++) {
         sprites[i].newPos();
