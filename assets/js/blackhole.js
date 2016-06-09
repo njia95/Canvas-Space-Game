@@ -141,7 +141,7 @@ class Component {
 }
 
 
-var myScore, sprites = new Array(), blackholes = new Array();
+var myScore, score = 0, sprites = new Array(), blackholes = new Array();
 
 function startGame() {
     GameArea.start();
@@ -227,8 +227,9 @@ var GameArea = {
 function updateGameArea() {
     GameArea.clear();
     GameArea.frameNo += 1;
+    
 
-    myScore.text = "SCORE: " + GameArea.frameNo;
+    myScore.text = "SCORE: " + score;
     myScore.draw();
 
     for (var i = 0; i < sprites.length; i++) {
@@ -254,54 +255,54 @@ function generateBH() {
 
 // random generator
 function randgen(purpose) {
-var i;
-// for shapes
-if (purpose == "shape") {
-    i = Math.floor((Math.random() * 3));
-    if (i == 0) {
-        i = "circle";
-    } else if (i == 1) {
-        i = "square";
-    } else {
-        i = "star";
+    var i;
+    // for shapes
+    if (purpose == "shape") {
+        i = Math.floor((Math.random() * 3));
+        if (i == 0) {
+            i = "circle";
+        } else if (i == 1) {
+            i = "square";
+        } else {
+            i = "star";
+        }
+    // for x starting position
+    } else if (purpose == "x") {
+        i = Math.floor(Math.random() * (MAXWIDTH - 100 + 1)) + 50;
+    // for y starting position
+    } else if (purpose == "y") {
+        i = Math.floor(Math.random() * (MAXHEIGHT - 100 + 1)) + 50;
+    // for speed
+    } else if (purpose == "speed"){
+        if (Math.random() >= 0.5) {
+            i = 1;
+        } else {
+            i = -1;
+        }
+    // for colour only 5 though
+    } else if (purpose == "colour"){
+        var colourNum = Math.floor((Math.random() * 5));
+        switch (colourNum) {
+            case 0:
+                i = "red";
+                break;
+            case 1:
+                i = "orange";
+                break;
+            case 2:
+                i = "yellow";
+                break;
+            case 3:
+                i = "green";
+                break;
+            case 4:
+                i = "blue";
+                break;
+            default:
+                i = "black";
+        }
     }
-// for x starting position
-} else if (purpose == "x") {
-    i = Math.floor(Math.random() * (MAXWIDTH - 100 + 1)) + 50;
-// for y starting position
-} else if (purpose == "y") {
-    i = Math.floor(Math.random() * (MAXHEIGHT - 100 + 1)) + 50;
-// for speed
-} else if (purpose == "speed"){
-    if (Math.random() >= 0.5) {
-        i = 1;
-    } else {
-        i = -1;
-    }
-// for colour only 5 though
-} else if (purpose == "colour"){
-    var colourNum = Math.floor((Math.random() * 5));
-    switch (colourNum) {
-        case 0:
-            i = "red";
-            break;
-        case 1:
-            i = "orange";
-            break;
-        case 2:
-            i = "yellow";
-            break;
-        case 3:
-            i = "green";
-            break;
-        case 4:
-            i = "blue";
-            break;
-        default:
-            i = "black";
-    }
-}
-return i;
+    return i;
 }
 
 function removeBlackhole(event) {
@@ -310,7 +311,14 @@ function removeBlackhole(event) {
     
     for (var i = 0; i < blackholes.length; i++) {
         if (clickX >= blackholes[i].x - 50 && clickX <= blackholes[i].x + 50 && clickY >= blackholes[i].y - 50 && clickY <= blackholes[i].y + 50) {
-            blackholes.splice(i, 1); // remove one blackhole
+            var removed = blackholes.splice(i, 1); // remove one blackhole
+            if ((removed[0].color)[11] == "b") { // blue
+                score += 5;
+            } else if ((removed[0].color)[11] == "p") { // purple
+                score += 10;
+            } else {
+                score += 20;
+            }
         }
     }
 }
