@@ -11,6 +11,7 @@ window.onload = function() {
 function showGame() {
     document.getElementById("game-page").style.display = "block";
     document.getElementById("start-page").style.display = "none";
+    document.getElementById("level-box").style.display = "none";
     timedCount();
 }
 
@@ -250,7 +251,6 @@ function updateGameArea() {
     GameArea.clear();
     GameArea.frameNo += 1;
     
-
     myScore.text = "SCORE: " + score;
     myScore.draw();
 
@@ -259,7 +259,6 @@ function updateGameArea() {
         sprites[i].draw();
     }
     
-
     for (var i = 0; i < blackholes.length; i++) {
         blackholes[i].draw();
     }
