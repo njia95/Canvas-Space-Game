@@ -27,7 +27,7 @@ var t;
 var timerOn = 0;
 
 function timedCount() {
-    document.getElementById("timer").value = time;
+    document.getElementById("timer").innerHTML = time;
     time--;
     t = setTimeout(function() { timedCount() }, 1000);
 }
@@ -135,6 +135,7 @@ class Component {
                 this.y <= blackholes[i].y + 10) {
                 var idx = sprites.indexOf(this);
                 sprites.splice(idx, 1);
+                score -= 50;
             }
         }  
         this.check();
@@ -165,10 +166,11 @@ class Component {
 
 // var myScore
 var myScore = document.getElementById("score");
-var score = parseInt(myScore.value);
+var score = 200, level = 1;
 var sprites = new Array(), blackholes = new Array();
 
 function startGame() {
+    document.getElementById("level").innerHTML = level;
     GameArea.start();
 
     // check if x and y were the same in the previous position
@@ -252,11 +254,13 @@ function updateGameArea() {
     GameArea.clear();
     GameArea.frameNo += 1;
     
-    myScore.value = score;
+    myScore.innerHTML = score;
 
     for (var i = 0; i < sprites.length; i++) {
         sprites[i].newPos();
-        sprites[i].draw();
+        if (sprites[i] != null) {
+           sprites[i].draw(); 
+        }
     }
     
     for (var i = 0; i < blackholes.length; i++) {

@@ -33,7 +33,7 @@ button {
     cursor: pointer;
 }
 
-#game-page h2 {
+#game-page h2, h3 {
     display: inline-block;
 }
 
@@ -79,5 +79,5 @@ button {
 #info {
     position: absolute;
     top: 5px;
-    left: 300px;
+    left: 100px;
 }
