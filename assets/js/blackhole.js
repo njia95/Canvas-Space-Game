@@ -114,7 +114,10 @@ class Component {
 
     newPos() { // change position
         for (var i = 0; i < blackholes.length; i++) {
-            if (this.x >= blackholes[i].x - 50 && this.x <= blackholes[i].x + 50 && this.y >= blackholes[i].y - 50 && this.y <= blackholes[i].y + 50) {
+            if (this.x >= blackholes[i].x - 50 && 
+                this.x <= blackholes[i].x + 50 && 
+                this.y >= blackholes[i].y - 50 && 
+                this.y <= blackholes[i].y + 50) {
                 var dx = blackholes[i].x - this.x;
                 var dy = blackholes[i].y - this.y;
                 this.speedX = dx / 5;
@@ -125,7 +128,10 @@ class Component {
         this.y += this.speedY;
         
         for (var i = 0; i < blackholes.length; i++) {
-            if (this.x >= blackholes[i].x - 10 && this.x <= blackholes[i].x + 10 && this.y >= blackholes[i].y - 10 && this.y <= blackholes[i].y + 10) {
+            if (this.x >= blackholes[i].x - 10 && 
+                this.x <= blackholes[i].x + 10 && 
+                this.y >= blackholes[i].y - 10 && 
+                this.y <= blackholes[i].y + 10) {
                 var idx = sprites.indexOf(this);
                 sprites.splice(idx, 1);
             }
@@ -152,7 +158,6 @@ class Component {
                 this.speedY = 0 - this.speedY;
             }
         }
- 
     }
 }
 
@@ -214,7 +219,8 @@ function startGame() {
         var currColour =randgen("colour");
 
         // create the sprite
-        sprites.push(new Component(currWidth, currHeight, currX, currY, currSpeedX, currSpeedY, currColour, "sprite", currShape));
+        sprites.push(new Component(currWidth, currHeight, currX, currY, 
+        currSpeedX, currSpeedY, currColour, "sprite", currShape));
 
         numSprites++;
     }   
@@ -260,12 +266,16 @@ function updateGameArea() {
 }
 
 function generateBH() {
-    if (time == 10 || time == 20 || time == 30 || time == 40 || time == 50 || time == 60) {
-        blackholes.push(new Component(50, 50, randgen("x"), randgen("y"), 0, 0, "assets/img/blue.svg", "image"));
+    if (time == 10 || time == 20 || time == 30 || 
+    time == 40 || time == 50 || time == 60) {
+        blackholes.push(new Component(50, 50, randgen("x"), randgen("y"), 0, 0, 
+        "assets/img/blue.svg", "image"));
     } else if (time == 45 || time == 30 || time == 15) {
-        blackholes.push(new Component(50, 50, randgen("x"), randgen("y"), 0, 0, "assets/img/purple.svg", "image"));
+        blackholes.push(new Component(50, 50, randgen("x"), randgen("y"), 0, 0, 
+        "assets/img/purple.svg", "image"));
     } else if (time == 30) {
-        blackholes.push(new Component(50, 50, randgen("x"), randgen("y"), 0, 0, "assets/img/black.svg", "image"));
+        blackholes.push(new Component(50, 50, randgen("x"), randgen("y"), 0, 0, 
+        "assets/img/black.svg", "image"));
     } 
 }
 
@@ -298,25 +308,8 @@ function randgen(purpose) {
     // for colour only 5 though
     } else if (purpose == "colour"){
         var colourNum = Math.floor((Math.random() * 5));
-        switch (colourNum) {
-            case 0:
-                i = "red";
-                break;
-            case 1:
-                i = "orange";
-                break;
-            case 2:
-                i = "yellow";
-                break;
-            case 3:
-                i = "green";
-                break;
-            case 4:
-                i = "blue";
-                break;
-            default:
-                i = "black";
-        }
+        var col = ["red", "orange", "yellow", "green", "blue"];
+        i = col[colourNum];
     }
     return i;
 }
@@ -326,7 +319,10 @@ function removeBlackhole(event) {
     var clickY = event.clientY - 10;
     
     for (var i = 0; i < blackholes.length; i++) {
-        if (clickX >= blackholes[i].x - 50 && clickX <= blackholes[i].x + 50 && clickY >= blackholes[i].y - 50 && clickY <= blackholes[i].y + 50) {
+        if (clickX >= blackholes[i].x - 50 && 
+            clickX <= blackholes[i].x + 50 && 
+            clickY >= blackholes[i].y - 50 && 
+            clickY <= blackholes[i].y + 50) {
             var removed = blackholes.splice(i, 1); // remove one blackhole
             if ((removed[0].color)[11] == "b") { // blue
                 score += 5;
