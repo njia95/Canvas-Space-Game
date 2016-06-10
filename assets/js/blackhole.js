@@ -5,7 +5,8 @@ const MAXWIDTH = 1000, MAXHEIGHT = 640, BLUE_SCORE = 5, PURPLE_SCORE = 10,
         BLUE_IMAGE = "assets/img/blue.svg", 
         PURPLE_IMAGE = "assets/img/purple.svg",
         BLACK_IMAGE = "assets/img/black.svg",
-        BLACKHOLE_DIAMETER = 50;
+        BLACKHOLE_DIAMETER = 50,
+        SPRITE_MAX_NUM = 10;
 
 // variables for the timer
 var time = 60, timerOn = 0;
@@ -33,6 +34,7 @@ function showGame() {
     document.getElementById("game-page").style.display = "block";
     document.getElementById("start-page").style.display = "none";
     document.getElementById("level-box").style.display = "none";
+    document.getElementById("level").innerHTML = level;
     timedCount();
 }
 
@@ -70,7 +72,6 @@ var GameArea = {
         // insert canvas as the first child of game page
         gamePage.insertBefore(this.canvas, gamePage.childNodes[0]);
 
-        this.frameNo = 0;
         // updateGameArea runs every 20th millisecond (50 times per second)
         setInterval(updateGameArea, 20);
         setInterval(generateBlackhole, 1000);
@@ -267,49 +268,42 @@ class Sprite extends Component {
     }
 }
 
+// remove blacholes from the array once clicked; assign scores given different
+// kinds of blackholes clicked
+function removeBlackhole(event) {
+    var clickX = event.clientX - 10;
+    var clickY = event.clientY - 10;
+
+    for (let i = 0; i < blackholes.length; i++) {
+        if (clickX >= blackholes[i].x - CLICK_DIST&&
+            clickX <= blackholes[i].x + CLICK_DIST &&
+            clickY >= blackholes[i].y - CLICK_DIST &&
+            clickY <= blackholes[i].y + CLICK_DIST) {
+                
+            var removed = blackholes.splice(i, 1); // remove one blackhole
+            if ((removed[0].src) == BLUE_IMAGE) { // blue
+                score += BLUE_SCORE;
+            } else if ((removed[0].src) == PURPLE_IMAGE) { // purple
+                score += PURPLE_SCORE;
+            } else {
+                score += BLACK_SCORE;
+            }
+        }
+    }
+}
+
 
 function startGame() {
-    document.getElementById("level").innerHTML = level;
     GameArea.initializeCanvas();
 
     // generating 10 shapes
-    var numSprites = 0;
-    while (numSprites < 10) {
-        var shape = generateShape();
-        var x = generatePosition(MAXWIDTH);
-        var y = generatePosition(MAXHEIGHT);
-        var speedX = generateSpeed();
-        var speedY = generateSpeed();
-
-        // regenerate starting position if it was alrea picked
-        while (samePos(x, y)) {
-            var x = generatePosition(MAXWIDTH);
-            var y = generatePosition(MAXHEIGHT);
-        }
-
-        // setting the values according to the shapes
-        var width, height;
-        if (shape == "square") {
-            width = 50;
-            height = 50;
-        } else {
-            width = 25;
-            height = 25;
-        }
-
-        // generate random colour
-        var colour = generateColour();
-
-        // create the sprite
-        sprites.push(new Sprite(width, height, x, y, speedX, speedY, colour,
-        shape));
-
-        numSprites++;
+    while (sprites.length < SPRITE_MAX_NUM) {
+        generateSprite();
     }
 }
 
 // check if x and y were the same in the previous position
-function samePos(x, y) {
+function checkSamePosition(x, y) {
     for (var i = 0; i < sprites.length; i++) {
         if (x == sprites[i].x && y == sprites[i].y) {
             return true;
@@ -318,10 +312,8 @@ function samePos(x, y) {
     return false;
 }
 
-
 function updateGameArea() {
     GameArea.clearCanvas();
-    GameArea.frameNo += 1;
 
     myScore.innerHTML = score;
 
@@ -341,15 +333,44 @@ function updateGameArea() {
     }
 }
 
-function generateBlackhole(type) {
-    if (time == 10 || time == 20 || time == 30 ||
-    time == 40 || time == 50 || time == 60) {
+function generateSprite() {
+    var shape = generateShape();
+    var speedX = generateSpeed();
+    var speedY = generateSpeed();
+    var colour = generateColour();
+
+    // regenerate starting position if it was alrea picked
+    var x, y;
+    do {
+        x = generatePosition(MAXWIDTH);
+        y = generatePosition(MAXHEIGHT);
+    } while (checkSamePosition(x, y));
+
+    // setting the values according to the shapes
+    var width, height;
+    if (shape == "square") {
+        width = 50;
+        height = 50;
+    } else {
+        width = 25;
+        height = 25;
+    }
+
+    // create the sprite
+    sprites.push(new Sprite(width, height, x, y, speedX, speedY, colour,
+    shape));
+}
+
+function generateBlackhole() {
+    if (time % BLUE_FREQUENCY == 0 && time > BLUE_FREQUENCY) {
         blackholes.push(new Blackhole(BLACKHOLE_DIAMETER, BLACKHOLE_DIAMETER, 
         generatePosition(MAXWIDTH), generatePosition(MAXHEIGHT), BLUE_IMAGE));
-    } else if (time == 45 || time == 30 || time == 15) {
+        
+    } else if (time % PURPLE_FREQUENCY == 0 && time > PURPLE_FREQUENCY) {
         blackholes.push(new Blackhole(BLACKHOLE_DIAMETER, BLACKHOLE_DIAMETER, 
         generatePosition(MAXWIDTH), generatePosition(MAXHEIGHT), PURPLE_IMAGE));
-    } else if (time == 30) {
+        
+    } else if (time % BLACK_FREQUENCY == 0 && time > BLACK_FREQUENCY) {
         blackholes.push(new Blackhole(BLACKHOLE_DIAMETER, BLACKHOLE_DIAMETER, 
         generatePosition(MAXWIDTH), generatePosition(MAXHEIGHT), BLACK_IMAGE));
     }
@@ -398,25 +419,4 @@ function generateColour() {
 }
 
 
-// remove blacholes from the array once clicked; assign scores given different
-// kinds of blackholes clicked
-function removeBlackhole(event) {
-    var clickX = event.clientX - 10;
-    var clickY = event.clientY - 10;
 
-    for (let i = 0; i < blackholes.length; i++) {
-        if (clickX >= blackholes[i].x - CLICK_DIST&&
-            clickX <= blackholes[i].x + CLICK_DIST &&
-            clickY >= blackholes[i].y - CLICK_DIST &&
-            clickY <= blackholes[i].y + CLICK_DIST) {
-            var removed = blackholes.splice(i, 1); // remove one blackhole
-            if ((removed[0].src)[11] == "b") { // blue
-                score += BLUE_SCORE;
-            } else if ((removed[0].src)[11] == "p") { // purple
-                score += PURPLE_SCORE;
-            } else {
-                score += BLACK_SCORE;
-            }
-        }
-    }
-}
