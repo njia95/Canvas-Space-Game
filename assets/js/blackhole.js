@@ -1,3 +1,18 @@
+// constants of this canvas
+const MAXWIDTH = 1000, MAXHEIGHT = 640, BLUE_SCORE = 5, PURPLE_SCORE = 10,
+        BLACK_SCORE = 20, HORIZON_DIST = 50, CLICK_DIST = 25;
+
+// variables for the timer
+var time = 60, timerOn = 0;
+
+// variables for the current level and score
+var score = 200, level = 1;
+
+// array for storing the sprites and blackholes
+var sprites = new Array(), blackholes = new Array();
+
+var myScore = document.getElementById("score");
+
 // called when page loads and sets up event handlers
 window.onload = function() {
     document.getElementById("finish").onclick = showStart;
@@ -8,6 +23,7 @@ window.onload = function() {
     startGame();
 }
 
+// onclick functions
 function showGame() {
     document.getElementById("game-page").style.display = "block";
     document.getElementById("start-page").style.display = "none";
@@ -18,18 +34,6 @@ function showGame() {
 function showStart() {
     document.getElementById("start-page").style.display = "block";
     document.getElementById("game-page").style.display = "none";
-}
-
-
-// timer
-var time = 60;
-var t;
-var timerOn = 0;
-
-function timedCount() {
-    document.getElementById("timer").innerHTML = time;
-    time--;
-    t = setTimeout(function() { timedCount() }, 1000);
 }
 
 function startCount() {
@@ -44,9 +48,15 @@ function stopCount() {
     timerOn = 0;
 }
 
-const MAXWIDTH = 1000;
-const MAXHEIGHT = 640;
-// main
+
+// timer counts down evert 1 second
+function timedCount() {
+    document.getElementById("timer").innerHTML = time;
+    time--;
+    setTimeout(function() { timedCount() }, 1000);
+}
+
+// this class used for creating sprites 
 class Component {
     constructor(width, height, x, y, speedX, speedY, color, type, shape) {
         this.width = width;
@@ -62,11 +72,7 @@ class Component {
 
     draw() {
         var ctx = GameArea.context;
-        if (this.type == "text") { // draw score
-            ctx.font = this.width + " " + this.height;
-            ctx.fillStyle = this.color;
-            ctx.fillText(this.text, this.x, this.y);
-        } else if (this.type == "image") { // draw svg
+        if (this.type == "image") { // draw svg
             this.image = new Image();
             this.image.src = this.color;
             ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
@@ -115,10 +121,10 @@ class Component {
 
     newPos() { // change position
         for (var i = 0; i < blackholes.length; i++) {
-            if (this.x >= blackholes[i].x - 50 && 
-                this.x <= blackholes[i].x + 50 && 
-                this.y >= blackholes[i].y - 50 && 
-                this.y <= blackholes[i].y + 50) {
+            if (this.x >= blackholes[i].x - HORIZON_DIST && 
+                this.x <= blackholes[i].x + HORIZON_DIST && 
+                this.y >= blackholes[i].y - HORIZON_DIST && 
+                this.y <= blackholes[i].y + HORIZON_DIST) {
                 var dx = blackholes[i].x - this.x;
                 var dy = blackholes[i].y - this.y;
                 this.speedX = dx / 5;
@@ -146,7 +152,7 @@ class Component {
         var bottom = GameArea.canvas.height - this.height;
 
         if (this.shape == "square") {
-            if (this.x > right || this.x < this.width - 50) {
+            if (this.x > right || this.x < this.width - HORIZON_DIST) {
                 this.speedX = 0 - this.speedX ;
             }
             if (this.y > bottom || this.y < this.height) {
@@ -156,18 +162,17 @@ class Component {
             if (this.x > right || this.x < this.width) {
                 this.speedX = 0 - this.speedX;
             }
-            if (this.y > bottom || this.y < this.height + 50) {
+            if (this.y > bottom || this.y < this.height + HORIZON_DIST) {
                 this.speedY = 0 - this.speedY;
             }
         }
     }
 }
 
+class Blackhole extends Component {
+    
+}
 
-// var myScore
-var myScore = document.getElementById("score");
-var score = 200, level = 1;
-var sprites = new Array(), blackholes = new Array();
 
 function startGame() {
     document.getElementById("level").innerHTML = level;
@@ -317,22 +322,25 @@ function randgen(purpose) {
     return i;
 }
 
+
+// remove blacholes from the array once clicked; assign scores given different
+// kinds of blackholes clicked
 function removeBlackhole(event) {
     var clickX = event.clientX - 10;
     var clickY = event.clientY - 10;
     
     for (var i = 0; i < blackholes.length; i++) {
-        if (clickX >= blackholes[i].x - 50 && 
-            clickX <= blackholes[i].x + 50 && 
-            clickY >= blackholes[i].y - 50 && 
-            clickY <= blackholes[i].y + 50) {
+        if (clickX >= blackholes[i].x - CLICK_DIST&& 
+            clickX <= blackholes[i].x + CLICK_DIST && 
+            clickY >= blackholes[i].y - CLICK_DIST && 
+            clickY <= blackholes[i].y + CLICK_DIST) {
             var removed = blackholes.splice(i, 1); // remove one blackhole
             if ((removed[0].color)[11] == "b") { // blue
-                score += 5;
+                score += BLUE_SCORE;
             } else if ((removed[0].color)[11] == "p") { // purple
-                score += 10;
+                score += PURPLE_SCORE;
             } else {
-                score += 20;
+                score += BLACK_SCORE;
             }
         }
     }
