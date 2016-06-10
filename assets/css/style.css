@@ -9,7 +9,6 @@ body {
 .box {
     background: #0000E1;
     width: 30%;
-    border: 5px solid #00F;
     margin: 0 auto;
 }
 
@@ -33,7 +32,7 @@ button {
     cursor: pointer;
 }
 
-#game-page h2, h3 {
+#info h2, h3 {
     display: inline-block;
 }
 

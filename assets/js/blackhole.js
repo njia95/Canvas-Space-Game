@@ -357,6 +357,10 @@ function updateGameArea() {
     for (let i = 0; i < blackholes.length; i++) {
         blackholes[i].draw();
     }
+    
+    if (level == 1 && time == 0) {
+        document.getElementById("level-box").style.display = "block";
+    }
 }
 
 function generateBlackholes() {
