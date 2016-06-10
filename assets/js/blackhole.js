@@ -293,47 +293,44 @@ function startGame() {
     // generating 10 shapes
     var numSprites = 0;
     while (numSprites < 10) {
-        var currShape = randgen("shape");
-        var currX = randgen("x");
-        var currY = randgen("y");
-        var currSpeedX = randgen("speed");
-        var currSpeedY = randgen("speed");
+        var shape = generateShape();
+        var x = generatePosition(MAXWIDTH);
+        var y = generatePosition(MAXHEIGHT);
+        var speedX = generateSpeed();
+        var speedY = generateSpeed();
 
-        var pos = new Array();
-        pos.push(currX, currY);
         // regenerate starting position if it was alrea picked
-        while (samePos(pos, allPos)) {
-            currX = randgen("x");
-            currY = randgen("y");
+        while (samePos(x, y)) {
+            var x = generatePosition(MAXWIDTH);
+            var y = generatePosition(MAXHEIGHT);
         }
-        allPos.push(pos);
 
         // setting the values according to the shapes
-        var currWidth;
-        var currHeight;
-        if (currShape == "square") {
-            currWidth = 50;
-            currHeight = 50;
+        var width;
+        var height;
+        if (shape == "square") {
+            width = 50;
+            height = 50;
         } else {
-            currWidth = 25;
-            currHeight = 25;
+            width = 25;
+            height = 25;
         }
 
         // generate random colour
-        var currColour =randgen("colour");
+        var colour = generateColour();
 
         // create the sprite
-        sprites.push(new Sprite(currWidth, currHeight, currX, currY,
-        currSpeedX, currSpeedY, currColour, currShape));
+        sprites.push(new Sprite(width, height, x, y, speedX, speedY, colour, 
+        shape));
 
         numSprites++;
     }
 }
 
 // check if x and y were the same in the previous position
-function samePos(currPos, allPos) {
-    for (var i = 0; i < 10; i++) {
-        if (allPos[i][0] == currPos[0] && allPos[i][1] == currPos[1]) {
+function samePos(x, y) {
+    for (var i = 0; i < sprites.length; i++) {
+        if (x == sprites[i].x && y == sprites[i].y) {
             return true;
         }
     }
@@ -380,45 +377,56 @@ function generateBlackholes() {
 // random generator
 function randgen(purpose) {
     var i;
-    // for shapes
-    if (purpose == "shape") {
-        i = Math.floor((Math.random() * 4));
-        if (i == 0) {
-            i = "circle";
-        } else if (i == 1) {
-            i = "square";
-        } else if (i == 2){
-            i = "star";
-        } else if (i == 3) {
-            i = "spaceShip";
-        } else {
-            i = "alien";
-        }
-    // for x starting position
-    } else if (purpose == "x") {
-        i = Math.floor(Math.random() * (MAXWIDTH - 200 + 1)) + 50;
-    // for y starting position
-    } else if (purpose == "y") {
-        i = Math.floor(Math.random() * (MAXHEIGHT - 200 + 1)) + 50;
-    // for speed
-    } else if (purpose == "speed"){
-        var dice = Math.random();
-        if (dice >= 0.25) {
-            i = 1;
-        } else if (dice >= 0.5){
-            i = -1;
-        } else if (dice >= 0.75) {
-            i = 2;
-        } else {
-            i = -2;
-        }
+
     // for colour only 5 though
-    } else if (purpose == "colour"){
+    if (purpose == "colour"){
         var colourNum = Math.floor((Math.random() * 5));
         var col = ["red", "orange", "yellow", "green", "blue"];
         i = col[colourNum];
     }
     return i;
+}
+
+function generateShape() {
+    var num = Math.floor((Math.random() * 4));
+    if (num == 0) {
+        shape = "circle";
+    } else if (num == 1) {
+        shape = "square";
+    } else if (num == 2){
+        shape = "star";
+    } else if (num == 3) {
+        shape = "spaceShip";
+    } else {
+        shape = "alien";
+    }
+    return shape;
+}
+
+function generatePosition(axis) {
+    return Math.floor(Math.random() * (axis - 200 + 1)) + 50;
+}
+
+function generateSpeed() {
+    var num = Math.random();
+    
+    if (num >= 0.25) {
+        speed = 1;
+    } else if (num >= 0.5){
+        speed = -1;
+    } else if (num >= 0.75) {
+        speed = 2;
+    } else {
+        speed = -2;
+    }
+    return speed;
+}
+
+function generateColour() {
+    var col = ["red", "orange", "yellow", "green", "blue"];
+    var idx = Math.floor((Math.random() * 5));
+    
+    return col[idx];
 }
 
 
