@@ -1,6 +1,11 @@
 // constants of this canvas
 const MAXWIDTH = 1000, MAXHEIGHT = 640, BLUE_SCORE = 5, PURPLE_SCORE = 10,
-        BLACK_SCORE = 20, HORIZON_DIST = 50, CLICK_DIST = 25;
+        BLACK_SCORE = 20, HORIZON_DIST = 50, CLICK_DIST = 25, 
+        BLUE_FREQUENCY = 10, PURPLE_FREQUENCY = 20, BLACK_FREQUENCY = 30,
+        BLUE_IMAGE = "assets/img/blue.svg", 
+        PURPLE_IMAGE = "assets/img/purple.svg",
+        BLACK_IMAGE = "assets/img/black.svg",
+        BLACKHOLE_DIAMETER = 50;
 
 // variables for the timer
 var time = 60, timerOn = 0;
@@ -68,7 +73,7 @@ var GameArea = {
         this.frameNo = 0;
         // updateGameArea runs every 20th millisecond (50 times per second)
         setInterval(updateGameArea, 20);
-        setInterval(generateBlackholes, 1000);
+        setInterval(generateBlackhole, 1000);
     },
 
     clearCanvas() {
@@ -283,13 +288,6 @@ function startGame() {
     document.getElementById("level").innerHTML = level;
     GameArea.initializeCanvas();
 
-    // store all the starting positions of the shapes
-    var allPos = new Array();
-    for (var i = 0; i < 10; i++) {
-        var empty = [-1, -1];
-        allPos.push(empty);
-    }
-
     // generating 10 shapes
     var numSprites = 0;
     while (numSprites < 10) {
@@ -306,8 +304,7 @@ function startGame() {
         }
 
         // setting the values according to the shapes
-        var width;
-        var height;
+        var width, height;
         if (shape == "square") {
             width = 50;
             height = 50;
@@ -344,14 +341,14 @@ function updateGameArea() {
 
     myScore.innerHTML = score;
 
-    for (let i = 0; i < sprites.length; i++) {
+    for (var i = 0; i < sprites.length; i++) {
         sprites[i].newPos();
         if (sprites[i] != null) {
            sprites[i].draw();
         }
     }
 
-    for (let i = 0; i < blackholes.length; i++) {
+    for (var i = 0; i < blackholes.length; i++) {
         blackholes[i].draw();
     }
     
@@ -360,31 +357,18 @@ function updateGameArea() {
     }
 }
 
-function generateBlackholes() {
+function generateBlackhole(type) {
     if (time == 10 || time == 20 || time == 30 ||
     time == 40 || time == 50 || time == 60) {
-        blackholes.push(new Blackhole(50, 50, randgen("x"), randgen("y"),
-        "assets/img/blue.svg"));
+        blackholes.push(new Blackhole(BLACKHOLE_DIAMETER, BLACKHOLE_DIAMETER, 
+        generatePosition(MAXWIDTH), generatePosition(MAXHEIGHT), BLUE_IMAGE));
     } else if (time == 45 || time == 30 || time == 15) {
-        blackholes.push(new Blackhole(50, 50, randgen("x"), randgen("y"),
-        "assets/img/purple.svg"));
+        blackholes.push(new Blackhole(BLACKHOLE_DIAMETER, BLACKHOLE_DIAMETER, 
+        generatePosition(MAXWIDTH), generatePosition(MAXHEIGHT), PURPLE_IMAGE));
     } else if (time == 30) {
-        blackholes.push(new Blackhole(50, 50, randgen("x"), randgen("y"),
-        "assets/img/black.svg"));
+        blackholes.push(new Blackhole(BLACKHOLE_DIAMETER, BLACKHOLE_DIAMETER, 
+        generatePosition(MAXWIDTH), generatePosition(MAXHEIGHT), BLACK_IMAGE));
     }
-}
-
-// random generator
-function randgen(purpose) {
-    var i;
-
-    // for colour only 5 though
-    if (purpose == "colour"){
-        var colourNum = Math.floor((Math.random() * 5));
-        var col = ["red", "orange", "yellow", "green", "blue"];
-        i = col[colourNum];
-    }
-    return i;
 }
 
 function generateShape() {
