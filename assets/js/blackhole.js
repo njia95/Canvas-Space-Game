@@ -55,6 +55,27 @@ function timedCount() {
     setTimeout(function() { timedCount() }, 1000);
 }
 
+var GameArea = {
+    canvas : document.createElement("canvas"),
+    initializeCanvas() {
+        this.canvas.width = MAXWIDTH;
+        this.canvas.height = MAXHEIGHT;
+        this.context = this.canvas.getContext("2d");
+        let gamePage = document.getElementById("game-page");
+        // insert canvas as the first child of game page
+        gamePage.insertBefore(this.canvas, gamePage.childNodes[0]);
+
+        this.frameNo = 0;
+        // updateGameArea runs every 20th millisecond (50 times per second)
+        setInterval(updateGameArea, 20);
+        setInterval(generateBlackholes, 1000);
+    },
+
+    clearCanvas() {
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+}
+
 // this class used for creating sprites
 class Component {
     constructor(width, height, x, y) {
@@ -91,130 +112,119 @@ class Sprite extends Component {
     draw() {
         var ctx = GameArea.context;
 
-        if (this.type == "text") { // draw score
-            ctx.font = this.width + " " + this.height;
+        if (this.shape == "circle") {
+            var centerX = this.x;
+            var centerY = this.y;
+            var height = 25;
+            var width = 100;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.width, 0, 2*Math.PI);
             ctx.fillStyle = this.color;
-            ctx.fillText(this.text, this.x, this.y);
-        } else if (this.type == "image") { // draw svg
-            this.image = new Image();
-            this.image.src = this.color;
-            ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+            ctx.fill();
 
-        } else {
-            if (this.shape == "circle") {
-                var centerX = this.x;
-                var centerY = this.y;
-                var height = 25;
-                var width = 100;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.width, 0, 2*Math.PI);
-                ctx.fillStyle = this.color;
-                ctx.fill();
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY - height/2); // A1
 
-                ctx.beginPath();
-                ctx.moveTo(centerX, centerY - height/2); // A1
+            ctx.bezierCurveTo(
+            centerX + width/2, centerY - height/2, // C1
+            centerX + width/2, centerY + height/2, // C2
+            centerX, centerY + height/2); // A2
 
-                ctx.bezierCurveTo(
-                centerX + width/2, centerY - height/2, // C1
-                centerX + width/2, centerY + height/2, // C2
-                centerX, centerY + height/2); // A2
+            ctx.bezierCurveTo(
+            centerX - width/2, centerY + height/2, // C3
+            centerX - width/2, centerY - height/2, // C4
+            centerX, centerY - height/2); // A1
+            ctx.stroke();
 
-                ctx.bezierCurveTo(
-                centerX - width/2, centerY + height/2, // C3
-                centerX - width/2, centerY - height/2, // C4
-                centerX, centerY - height/2); // A1
-                ctx.stroke();
+        } else if (this.shape == "square") {
+            ctx.fillStyle = this.color;
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+        } else if (this.shape == "star") {
+            var rot = Math.PI/2*3;
+            var x = this.x;
+            var y = this.y;
+            var spikes = 5;
+            var step=Math.PI/spikes;
+            var outerRadius = 25;
+            var innerRadius = 10;
 
-            } else if (this.shape == "square") {
-                ctx.fillStyle = this.color;
-                ctx.fillRect(this.x, this.y, this.width, this.height);
-            } else if (this.shape == "star") {
-                var rot = Math.PI/2*3;
-                var x = this.x;
-                var y = this.y;
-                var spikes = 5;
-                var step=Math.PI/spikes;
-                var outerRadius = 25;
-                var innerRadius = 10;
+            ctx.beginPath();
+            ctx.moveTo(this.x,this.y - outerRadius)
+            for (var i = 0; i < spikes; i++){
+                x = this.x + Math.cos(rot)*outerRadius;
+                y = this.y + Math.sin(rot)*outerRadius;
+                ctx.lineTo(x,y)
+                rot+=step
 
-                ctx.beginPath();
-                ctx.moveTo(this.x,this.y - outerRadius)
-                for (var i = 0; i < spikes; i++){
-                    x = this.x + Math.cos(rot)*outerRadius;
-                    y = this.y + Math.sin(rot)*outerRadius;
-                    ctx.lineTo(x,y)
-                    rot+=step
-
-                    x = this.x + Math.cos(rot)*innerRadius;
-                    y = this.y + Math.sin(rot)*innerRadius;
-                    ctx.lineTo(x,y)
-                    rot += step
-                }
-                ctx.lineTo(this.x,this.y - outerRadius);
-                ctx.closePath();
-                ctx.lineWidth = 5;
-                ctx.strokeStyle = this.color;
-                ctx.stroke();
-                ctx.fillStyle = this.color;
-                ctx.fill();
-            } else if (this.shape == "spaceShip") {
-                ctx.beginPath();
-                ctx.moveTo(this.x,this.y);
-                ctx.lineTo(this.x + 9, this.y + 17.7);
-                ctx.lineTo(this.x - 9, this.y + 17.7);
-                ctx.lineTo(this.x, this.y);
-                ctx.fillStyle = this.color;
-                ctx.closePath();
-                ctx.stroke();
-
-                ctx.beginPath();
-                ctx.fillRect(this.x-12.5, this.y + 17.7, 25, 37.5);
-                ctx.closePath();
-                ctx.stroke();
-
-                var shipY = this.y - 25;
-                var leftShipX = this.x - 14;
-                var rightShipX = this.x + 14;
-
-                ctx.beginPath();
-                ctx.moveTo(leftShipX, shipY + 65);
-                ctx.lineTo(leftShipX, shipY + 77.5);
-                ctx.lineTo(leftShipX - 12.5, shipY + 77.5);
-                ctx.closePath();
-                ctx.stroke();
-
-                ctx.beginPath();
-                ctx.moveTo(rightShipX, shipY + 65);
-                ctx.lineTo(rightShipX, shipY + 77.5);
-                ctx.lineTo(rightShipX + 12.5, shipY + 77.5);
-                ctx.closePath();
-                ctx.stroke();
-
-            } else if (this.shape == "alien") {
-                ctx.beginPath();
-                ctx.arc(centerX, centerY - 20, 40, 0, 2 * Math.PI,false); // x, y, radius, startAngle, endAngle, antiClockWise
-                ctx.fillStyle = this.color;
-                ctx.fill();
-                ctx.closePath();
-
-                ctx.beginPath();
-                ctx.moveTo(centerX, centerY - height/2); // A1
-
-                ctx.bezierCurveTo(
-                centerX + width/2, centerY - height/2, // C1
-                centerX + width/2, centerY + height/2, // C2
-                centerX, centerY + height/2); // A2
-
-                ctx.bezierCurveTo(
-                centerX - width/2, centerY + height/2, // C3
-                centerX - width/2, centerY - height/2, // C4
-                centerX, centerY - height/2); // A1
-
-                ctx.fillStyle =this.color;
-                ctx.fill();
-                ctx.closePath();
-                ctx.stroke();
+                x = this.x + Math.cos(rot)*innerRadius;
+                y = this.y + Math.sin(rot)*innerRadius;
+                ctx.lineTo(x,y)
+                rot += step
             }
+            ctx.lineTo(this.x,this.y - outerRadius);
+            ctx.closePath();
+            ctx.lineWidth = 5;
+            ctx.strokeStyle = this.color;
+            ctx.stroke();
+            ctx.fillStyle = this.color;
+            ctx.fill();
+        } else if (this.shape == "spaceShip") {
+            ctx.beginPath();
+            ctx.moveTo(this.x,this.y);
+            ctx.lineTo(this.x + 9, this.y + 17.7);
+            ctx.lineTo(this.x - 9, this.y + 17.7);
+            ctx.lineTo(this.x, this.y);
+            ctx.fillStyle = this.color;
+            ctx.closePath();
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.fillRect(this.x-12.5, this.y + 17.7, 25, 37.5);
+            ctx.closePath();
+            ctx.stroke();
+
+            var shipY = this.y - 25;
+            var leftShipX = this.x - 14;
+            var rightShipX = this.x + 14;
+
+            ctx.beginPath();
+            ctx.moveTo(leftShipX, shipY + 65);
+            ctx.lineTo(leftShipX, shipY + 77.5);
+            ctx.lineTo(leftShipX - 12.5, shipY + 77.5);
+            ctx.closePath();
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(rightShipX, shipY + 65);
+            ctx.lineTo(rightShipX, shipY + 77.5);
+            ctx.lineTo(rightShipX + 12.5, shipY + 77.5);
+            ctx.closePath();
+            ctx.stroke();
+
+        } else if (this.shape == "alien") {
+            ctx.beginPath();
+            ctx.arc(centerX, centerY - 20, 40, 0, 2 * Math.PI,false); // x, y, radius, startAngle, endAngle, antiClockWise
+            ctx.fillStyle = this.color;
+            ctx.fill();
+            ctx.closePath();
+
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY - height/2); // A1
+
+            ctx.bezierCurveTo(
+            centerX + width/2, centerY - height/2, // C1
+            centerX + width/2, centerY + height/2, // C2
+            centerX, centerY + height/2); // A2
+
+            ctx.bezierCurveTo(
+            centerX - width/2, centerY + height/2, // C3
+            centerX - width/2, centerY - height/2, // C4
+            centerX, centerY - height/2); // A1
+
+            ctx.fillStyle =this.color;
+            ctx.fill();
+            ctx.closePath();
+            ctx.stroke();
         }
     }
 
@@ -330,26 +340,6 @@ function samePos(currPos, allPos) {
     return false;
 }
 
-var GameArea = {
-    canvas : document.createElement("canvas"),
-    initializeCanvas() {
-        this.canvas.width = MAXWIDTH;
-        this.canvas.height = MAXHEIGHT;
-        this.context = this.canvas.getContext("2d");
-        let gamePage = document.getElementById("game-page");
-        // insert canvas as the first child of game page
-        gamePage.insertBefore(this.canvas, gamePage.childNodes[0]);
-
-        this.frameNo = 0;
-        // updateGameArea runs every 20th millisecond (50 times per second)
-        setInterval(updateGameArea, 20);
-        setInterval(generateBlackholes, 1000);
-    },
-
-    clearCanvas() {
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    }
-}
 
 function updateGameArea() {
     GameArea.clearCanvas();
