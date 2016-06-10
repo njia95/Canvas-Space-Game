@@ -111,16 +111,23 @@ class Sprite extends Component {
 
     draw() {
         var ctx = GameArea.context;
-
         if (this.shape == "circle") {
-            var centerX = this.x;
-            var centerY = this.y;
-            var height = 25;
-            var width = 100;
             ctx.beginPath();
-            ctx.arc(this.x, this.y, this.width, 0, 2*Math.PI);
+            ctx.arc(this.x, this.y, 25, 0, 2 * Math.PI);
             ctx.fillStyle = this.color;
             ctx.fill();
+            ctx.closePath();
+
+        } else if (this.shape == "planet") {
+            var centerX = this.x;
+            var centerY = this.y;
+            var height = 10;
+            var width = 50;
+            
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, 15, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.closePath();
 
             ctx.beginPath();
             ctx.moveTo(centerX, centerY - height/2); // A1
@@ -131,9 +138,10 @@ class Sprite extends Component {
             centerX, centerY + height/2); // A2
 
             ctx.bezierCurveTo(
-            centerX - width/2, centerY + height/2, // C3
-            centerX - width/2, centerY - height/2, // C4
-            centerX, centerY - height/2); // A1
+                centerX - width/2, centerY + height/2, // C3
+                centerX - width/2, centerY - height/2, // C4
+                centerX, centerY - height/2); // A1
+            ctx.closePath();
             ctx.stroke();
 
         } else if (this.shape == "square") {
@@ -169,62 +177,38 @@ class Sprite extends Component {
             ctx.fillStyle = this.color;
             ctx.fill();
         } else if (this.shape == "spaceShip") {
+            // spaceShip
             ctx.beginPath();
-            ctx.moveTo(this.x,this.y);
-            ctx.lineTo(this.x + 9, this.y + 17.7);
-            ctx.lineTo(this.x - 9, this.y + 17.7);
-            ctx.lineTo(this.x, this.y);
-            ctx.fillStyle = this.color;
+            ctx.moveTo(this.x, this.y - 25);
+            ctx.lineTo(this.x + 10, this.y);
+            ctx.lineTo(this.x - 10, this.y);
+            ctx.fillStyle = "blue";
+            ctx.fill();
             ctx.closePath();
-            ctx.stroke();
+
 
             ctx.beginPath();
-            ctx.fillRect(this.x-12.5, this.y + 17.7, 25, 37.5);
+            ctx.fillStyle = "yellow";
+            ctx.fillRect(this.x - 10, this.y, 20, 25);
             ctx.closePath();
-            ctx.stroke();
-
-            var shipY = this.y - 25;
-            var leftShipX = this.x - 14;
-            var rightShipX = this.x + 14;
 
             ctx.beginPath();
-            ctx.moveTo(leftShipX, shipY + 65);
-            ctx.lineTo(leftShipX, shipY + 77.5);
-            ctx.lineTo(leftShipX - 12.5, shipY + 77.5);
+            ctx.moveTo(this.x - 10, this.y + 12.5);
+            ctx.lineTo(this.x - 25, this.y + 25);
+            ctx.lineTo(this.x - 10, this.y + 25);
+            ctx.fillStyle = "red";
+            ctx.fill();
             ctx.closePath();
-            ctx.stroke();
 
             ctx.beginPath();
-            ctx.moveTo(rightShipX, shipY + 65);
-            ctx.lineTo(rightShipX, shipY + 77.5);
-            ctx.lineTo(rightShipX + 12.5, shipY + 77.5);
+            ctx.moveTo(this.x + 10, this.y + 12.5);
+            ctx.lineTo(this.x + 25, this.y + 25);
+            ctx.lineTo(this.x + 10, this.y + 25);
+            ctx.fill();
             ctx.closePath();
-            ctx.stroke();
 
         } else if (this.shape == "alien") {
-            ctx.beginPath();
-            ctx.arc(centerX, centerY - 20, 40, 0, 2 * Math.PI,false); // x, y, radius, startAngle, endAngle, antiClockWise
-            ctx.fillStyle = this.color;
-            ctx.fill();
-            ctx.closePath();
 
-            ctx.beginPath();
-            ctx.moveTo(centerX, centerY - height/2); // A1
-
-            ctx.bezierCurveTo(
-            centerX + width/2, centerY - height/2, // C1
-            centerX + width/2, centerY + height/2, // C2
-            centerX, centerY + height/2); // A2
-
-            ctx.bezierCurveTo(
-            centerX - width/2, centerY + height/2, // C3
-            centerX - width/2, centerY - height/2, // C4
-            centerX, centerY - height/2); // A1
-
-            ctx.fillStyle =this.color;
-            ctx.fill();
-            ctx.closePath();
-            ctx.stroke();
         }
     }
 
@@ -320,7 +304,7 @@ function startGame() {
         var colour = generateColour();
 
         // create the sprite
-        sprites.push(new Sprite(width, height, x, y, speedX, speedY, colour, 
+        sprites.push(new Sprite(width, height, x, y, speedX, speedY, colour,
         shape));
 
         numSprites++;
@@ -354,7 +338,7 @@ function updateGameArea() {
     for (let i = 0; i < blackholes.length; i++) {
         blackholes[i].draw();
     }
-    
+
     if (level == 1 && time == 0) {
         document.getElementById("level-box").style.display = "block";
     }
@@ -398,7 +382,7 @@ function generateShape() {
     } else if (num == 3) {
         shape = "spaceShip";
     } else {
-        shape = "alien";
+        shape = "planet";
     }
     return shape;
 }
@@ -409,7 +393,7 @@ function generatePosition(axis) {
 
 function generateSpeed() {
     var num = Math.random();
-    
+
     if (num >= 0.25) {
         speed = 1;
     } else if (num >= 0.5){
@@ -425,7 +409,7 @@ function generateSpeed() {
 function generateColour() {
     var col = ["red", "orange", "yellow", "green", "blue"];
     var idx = Math.floor((Math.random() * 5));
-    
+
     return col[idx];
 }
 
