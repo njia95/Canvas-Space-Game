@@ -49,7 +49,30 @@ function showNext() {
     timedCount();
 }
 
+function sortNumber(a,b) {
+    return a - b;
+}
+
 function showStart() {
+    // if (typeof(Storage) !== "undefined") {
+    //     localStorage.setItem("first", "");
+    //     localStorage.setItem("second", "");
+    //     localStorage.setItem("third", "");
+    //     }
+    var highScores = new Array();
+    for (var i in localStorage) {
+        highScores.push(parseInt(localStorage[i]));
+    }
+    highScores.push(score);
+    alert(score);
+    highScores.sort(sortNumber);
+    for (var i = 0; i < 3 && i < highScores.length; i++) {
+        localStorage[i] = highScores[i];
+    }
+
+    document.getElementById("high-score").innerHTML = 
+    "High Scores:\n" + localStorage[0];
+
     document.getElementById("start-page").style.display = "block";
     document.getElementById("game-page").style.display = "none";
 }
@@ -353,7 +376,7 @@ function updateGameArea() {
         blackholes[i].draw();
     }
 
-    if (time == 0) {
+    if (time == 55) {
         if (level == 1) {
             document.getElementById("level-box").style.display = "block";
             document.getElementById("current-level").innerHTML = "Level: " + level;
