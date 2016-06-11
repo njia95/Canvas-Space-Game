@@ -29,6 +29,7 @@ window.onload = function() {
     document.getElementById("timerStart").onclick = startCount;
     document.getElementById("timerPause").onclick = stopCount;
     GameArea.canvas.onclick = removeBlackhole;
+    showHighScores();
 
 }
 
@@ -51,31 +52,38 @@ function showNext() {
 }
 
 function sortNumber(a,b) {
-    return a - b;
+    return b - a;
 }
 
 function showStart() {
-    // if (typeof(Storage) !== "undefined") {
-    //     localStorage.setItem("first", "");
-    //     localStorage.setItem("second", "");
-    //     localStorage.setItem("third", "");
-    //     }
     var highScores = new Array();
-    for (var i in localStorage) {
+    for (var i = 0; i < localStorage.length; i++) {
         highScores.push(parseInt(localStorage[i]));
     }
+    
     highScores.push(score);
-    alert(score);
     highScores.sort(sortNumber);
-    for (var i = 0; i < 3 && i < highScores.length; i++) {
-        localStorage[i] = highScores[i];
+    
+    for (var i = 0; i < highScores.length; i++) {
+        localStorage[i] = (highScores[i]); 
     }
-
-    document.getElementById("high-score").innerHTML = 
-    "High Scores:\n" + localStorage[0];
+    
+    showHighScores();
 
     document.getElementById("start-page").style.display = "block";
     document.getElementById("game-page").style.display = "none";
+}
+
+function showHighScores() {
+    var highScoreString = "High Scores: <br />";
+    var i = 0;
+    
+    while (typeof localStorage[i] != "undefined") {
+        highScoreString += localStorage[i] + "<br />"; 
+        i++;
+    }
+    
+    document.getElementById("high-score").innerHTML = highScoreString;
 }
 
 function startCount() {
@@ -363,7 +371,7 @@ function updateGameArea() {
         blackholes[i].draw();
     }
 
-    if (time == 55) {
+    if (time == 30) {
         if (level == 1) {
             document.getElementById("level-box").style.display = "block";
             document.getElementById("current-level").innerHTML = "Level: " + level;
