@@ -1,8 +1,8 @@
 // constants of this canvas
 const MAXWIDTH = 1000, MAXHEIGHT = 640, BLUE_SCORE = 5, PURPLE_SCORE = 10,
-        BLACK_SCORE = 20, HORIZON_DIST = 50, CLICK_DIST = 25, 
+        BLACK_SCORE = 20, HORIZON_DIST = 50, CLICK_DIST = 25,
         BLUE_FREQUENCY = 10, PURPLE_FREQUENCY = 20, BLACK_FREQUENCY = 30,
-        BLUE_IMAGE = "assets/img/blue.svg", 
+        BLUE_IMAGE = "assets/img/blue.svg",
         PURPLE_IMAGE = "assets/img/purple.svg",
         BLACK_IMAGE = "assets/img/black.svg",
         BLACKHOLE_DIAMETER = 50,
@@ -29,7 +29,7 @@ window.onload = function() {
     document.getElementById("timerStart").onclick = startCount;
     document.getElementById("timerPause").onclick = stopCount;
     GameArea.canvas.onclick = removeBlackhole;
-    
+
 }
 
 // onclick functions
@@ -115,47 +115,50 @@ class Blackhole extends Component {
 }
 
 class Sprite extends Component {
-    constructor(width, height, x, y, speedX, speedY, color, shape) {
+    constructor(width, height, x, y, speedX, speedY, color, shape, spikes = 5) {
         super(width, height, x, y);
         this.speedX = speedX;
         this.speedY = speedY;
         this.color = color;
         this.shape = shape;
+        this.spikes = spikes;
     }
-
+    // draw different shapes
     draw() {
         var ctx = GameArea.context;
         if (this.shape == "circle") {
             ctx.beginPath();
             ctx.arc(this.x, this.y, 25, 0, 2 * Math.PI);
+            ctx.closePath();
             ctx.fillStyle = this.color;
             ctx.fill();
-            ctx.closePath();
 
         } else if (this.shape == "planet") {
             var centerX = this.x;
             var centerY = this.y;
             var height = 10;
             var width = 50;
-            
+
+            // middle circle
             ctx.beginPath();
             ctx.arc(this.x, this.y, 15, 0, 2 * Math.PI);
-            ctx.fill();
+            ctx.fillStyle = this.color;
             ctx.closePath();
+            ctx.fill();
 
+            // oval
             ctx.beginPath();
             ctx.moveTo(centerX, centerY - height/2); // A1
-
             ctx.bezierCurveTo(
-            centerX + width/2, centerY - height/2, // C1
-            centerX + width/2, centerY + height/2, // C2
-            centerX, centerY + height/2); // A2
-
+                centerX + width/2, centerY - height/2, // C1
+                centerX + width/2, centerY + height/2, // C2
+                centerX, centerY + height/2); // A2
             ctx.bezierCurveTo(
                 centerX - width/2, centerY + height/2, // C3
                 centerX - width/2, centerY - height/2, // C4
                 centerX, centerY - height/2); // A1
             ctx.closePath();
+            ctx.strokeStyle = generateColour();
             ctx.stroke();
 
         } else if (this.shape == "square") {
@@ -165,7 +168,7 @@ class Sprite extends Component {
             var rot = Math.PI/2*3;
             var x = this.x;
             var y = this.y;
-            var spikes = 5;
+            var spikes = this.spikes;
             var step=Math.PI/spikes;
             var outerRadius = 25;
             var innerRadius = 10;
@@ -188,7 +191,7 @@ class Sprite extends Component {
             ctx.lineWidth = 5;
             ctx.strokeStyle = this.color;
             ctx.stroke();
-            ctx.fillStyle = this.color;
+            ctx.fillStyle = generateColour();
             ctx.fill();
         } else if (this.shape == "spaceShip") {
             // spaceShip
@@ -220,8 +223,6 @@ class Sprite extends Component {
             ctx.lineTo(this.x + 10, this.y + 25);
             ctx.fill();
             ctx.closePath();
-
-        } else if (this.shape == "alien") {
 
         }
     }
@@ -287,7 +288,7 @@ function removeBlackhole(event) {
             clickX <= blackholes[i].x + CLICK_DIST &&
             clickY >= blackholes[i].y - CLICK_DIST &&
             clickY <= blackholes[i].y + CLICK_DIST) {
-                
+
             var removed = blackholes.splice(i, 1); // remove one blackhole
             if ((removed[0].src) == BLUE_IMAGE) { // blue
                 score += BLUE_SCORE;
@@ -306,7 +307,7 @@ function startGame() {
     intervalId = setInterval(updateGameArea, 20);
     setInterval(generateBlackhole, 1000);
     // alert(level);
-    
+
     // generating 10 shapes
     while (sprites.length < SPRITE_MAX_NUM) {
         generateSprite();
@@ -338,7 +339,7 @@ function updateGameArea() {
     for (var i = 0; i < blackholes.length; i++) {
         blackholes[i].draw();
     }
-    
+
     if (time == 0) {
         if (level == 1) {
             document.getElementById("level-box").style.display = "block";
@@ -383,42 +384,38 @@ function generateSprite() {
         height = 25;
     }
 
+    // generating number of spikes for stars
+    var spikes = generateSpikes();
+
     // create the sprite
     sprites.push(new Sprite(width, height, x, y, speedX, speedY, colour,
-    shape));
+    shape, spikes));
 }
 
 function generateBlackhole() {
     if (time % BLUE_FREQUENCY == 0 && time >= BLUE_FREQUENCY) {
-        blackholes.push(new Blackhole(BLACKHOLE_DIAMETER, BLACKHOLE_DIAMETER, 
+        blackholes.push(new Blackhole(BLACKHOLE_DIAMETER, BLACKHOLE_DIAMETER,
         generatePosition(MAXWIDTH), generatePosition(MAXHEIGHT), BLUE_IMAGE));
     }
-    
+
     if (time % PURPLE_FREQUENCY == 0 && time >= PURPLE_FREQUENCY) {
-        blackholes.push(new Blackhole(BLACKHOLE_DIAMETER, BLACKHOLE_DIAMETER, 
+        blackholes.push(new Blackhole(BLACKHOLE_DIAMETER, BLACKHOLE_DIAMETER,
         generatePosition(MAXWIDTH), generatePosition(MAXHEIGHT), PURPLE_IMAGE));
     }
-    
+
     if (time % BLACK_FREQUENCY == 0 && time >= BLACK_FREQUENCY) {
-        blackholes.push(new Blackhole(BLACKHOLE_DIAMETER, BLACKHOLE_DIAMETER, 
+        blackholes.push(new Blackhole(BLACKHOLE_DIAMETER, BLACKHOLE_DIAMETER,
         generatePosition(MAXWIDTH), generatePosition(MAXHEIGHT), BLACK_IMAGE));
     }
 }
-
+function generateSpikes() {
+    var numSpikes = Math.floor((Math.random() * 6)) + 3;
+    return numSpikes;
+}
 function generateShape() {
-    var num = Math.floor((Math.random() * 4));
-    if (num == 0) {
-        shape = "circle";
-    } else if (num == 1) {
-        shape = "square";
-    } else if (num == 2){
-        shape = "star";
-    } else if (num == 3) {
-        shape = "spaceShip";
-    } else {
-        shape = "planet";
-    }
-    return shape;
+    var i = Math.floor((Math.random() * 5));
+    var shapes = ["circle", "square", "spaceShip", "star", "planet"];
+    return shapes[i];
 }
 
 function generatePosition(axis) {
@@ -426,23 +423,13 @@ function generatePosition(axis) {
 }
 
 function generateSpeed() {
-    var num = Math.random();
-
-    if (num >= 0.25) {
-        speed = 1;
-    } else if (num >= 0.5){
-        speed = -1;
-    } else if (num >= 0.75) {
-        speed = 2;
-    } else {
-        speed = -2;
-    }
-    return speed;
+    var speedz = [-2, 1, 1, 2];
+    var i = Math.floor((Math.random() * 4));
+    return speedz[i];
 }
 
 function generateColour() {
-    var col = ["red", "orange", "yellow", "green", "blue"];
-    var idx = Math.floor((Math.random() * 5));
-
-    return col[idx];
+    var colours = ["red", "orange", "yellow", "green", "blue"];
+    var i = Math.floor((Math.random() * 5));
+    return colours[i];
 }
