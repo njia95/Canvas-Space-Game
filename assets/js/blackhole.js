@@ -15,7 +15,8 @@ var time = 60, timerOn = 0;
 // variables for the current level and score
 var score = 200, level = 1;
 
-// array for storing the sprites and blackholes
+// array for storing the sprites and
+
 var sprites = new Array(), blackholes = new Array();
 
 var myScore = document.getElementById("score");
@@ -78,9 +79,9 @@ function showHighScores() {
 
     var highScoreString = "High Scores: <br />";
     var i = 0;
-    
+
     while (typeof localStorage[i] != "undefined" && i < HIGH_SCORE_NUM) {
-        highScoreString += localStorage[i] + "<br />"; 
+        highScoreString += localStorage[i] + "<br />";
         i++;
     }
 
@@ -138,7 +139,7 @@ class Blackhole extends Component {
         this.src = src;
         this.pullSpeed = pullSpeed;
         this.eatLimit = eatLimit;
-        this.eatHowMany = 0;
+        this.eaten = 0;
     }
 
     draw() {
@@ -147,12 +148,13 @@ class Blackhole extends Component {
         this.image.src = this.src;
         ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
     }
-    
-    check() {
-        if (this.eatHowMany = this.eatLimit) {
-            var idx = blackholes.indexOf(this);
-            blackholes.splice(idx, 1);
-        }        
+
+    checkLimit() {
+        return this.eaten == this.eatLimit;
+    }
+
+    ateOne() {
+        this.eaten++;
     }
 }
 
@@ -291,8 +293,8 @@ class Sprite extends Component {
                 var idx = sprites.indexOf(this);
                 sprites.splice(idx, 1);
                 score -= 50;
-                
-                blackholes[i].eatHowMany++;
+
+                blackholes[i].ateOne();
 
             }
         }
@@ -395,13 +397,13 @@ function updateGameArea() {
     }
 
     for (var i = 0; i < blackholes.length; i++) {
-        // blackholes[i].check();
-        // if (blackholes[i] != null) {
+        // blackholes[i].draw();
+        if (! (blackholes[i].checkLimit())) {
             blackholes[i].draw();
-        // }  
+        }
     }
 
-    if (time == 30) {
+    if (time == 0) {
         levelUp();
     }
 }
@@ -410,7 +412,7 @@ function levelUp() {
     if (level == 1) {
         level++;
     }
-    
+
     // clearing the array for sprites
     sprites = [];
 
@@ -457,19 +459,19 @@ function generateSprite(currShape, numSpikes) {
 function generateBlackhole() {
     if (time % (BLUE_FREQUENCY / level) == 0 && time >= (BLUE_FREQUENCY / level)) {
         blackholes.push(new Blackhole(BLACKHOLE_DIAMETER, BLACKHOLE_DIAMETER,
-        generatePosition(MAXWIDTH), generatePosition(MAXHEIGHT), BLUE_IMAGE, 
+        generatePosition(MAXWIDTH), generatePosition(MAXHEIGHT), BLUE_IMAGE,
         BLUE_PULL_SPEED, BLUE_EAT));
     }
 
     if (time % (PURPLE_FREQUENCY / level) == 0 && time >= (PURPLE_FREQUENCY / level)) {
         blackholes.push(new Blackhole(BLACKHOLE_DIAMETER, BLACKHOLE_DIAMETER,
-        generatePosition(MAXWIDTH), generatePosition(MAXHEIGHT), PURPLE_IMAGE, 
+        generatePosition(MAXWIDTH), generatePosition(MAXHEIGHT), PURPLE_IMAGE,
         PURPLE_PULL_SPEED, PURPLE_EAT));
     }
 
     if (time % (BLACK_FREQUENCY / level) == 0 && time >= (BLACK_FREQUENCY / level)) {
         blackholes.push(new Blackhole(BLACKHOLE_DIAMETER, BLACKHOLE_DIAMETER,
-        generatePosition(MAXWIDTH), generatePosition(MAXHEIGHT), BLACK_IMAGE, 
+        generatePosition(MAXWIDTH), generatePosition(MAXHEIGHT), BLACK_IMAGE,
         BLACK_PULL_SPEED, BLACK_EAT));
     }
 }
