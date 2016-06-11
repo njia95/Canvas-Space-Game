@@ -339,7 +339,7 @@ function updateGameArea() {
         blackholes[i].draw();
     }
     
-    if (time == 55) {
+    if (time == 0) {
         if (level == 1) {
             document.getElementById("level-box").style.display = "block";
             document.getElementById("current-level").innerHTML = "Level: " + level;
@@ -389,15 +389,17 @@ function generateSprite() {
 }
 
 function generateBlackhole() {
-    if (time % BLUE_FREQUENCY == 0 && time > BLUE_FREQUENCY) {
+    if (time % BLUE_FREQUENCY == 0 && time >= BLUE_FREQUENCY) {
         blackholes.push(new Blackhole(BLACKHOLE_DIAMETER, BLACKHOLE_DIAMETER, 
         generatePosition(MAXWIDTH), generatePosition(MAXHEIGHT), BLUE_IMAGE));
-        
-    } else if (time % PURPLE_FREQUENCY == 0 && time > PURPLE_FREQUENCY) {
+    }
+    
+    if (time % PURPLE_FREQUENCY == 0 && time >= PURPLE_FREQUENCY) {
         blackholes.push(new Blackhole(BLACKHOLE_DIAMETER, BLACKHOLE_DIAMETER, 
         generatePosition(MAXWIDTH), generatePosition(MAXHEIGHT), PURPLE_IMAGE));
-        
-    } else if (time % BLACK_FREQUENCY == 0 && time > BLACK_FREQUENCY) {
+    }
+    
+    if (time % BLACK_FREQUENCY == 0 && time >= BLACK_FREQUENCY) {
         blackholes.push(new Blackhole(BLACKHOLE_DIAMETER, BLACKHOLE_DIAMETER, 
         generatePosition(MAXWIDTH), generatePosition(MAXHEIGHT), BLACK_IMAGE));
     }
@@ -444,6 +446,3 @@ function generateColour() {
 
     return col[idx];
 }
-
-
-
