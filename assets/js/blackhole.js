@@ -18,7 +18,7 @@ var sprites = new Array(), blackholes = new Array();
 
 var myScore = document.getElementById("score");
 
-var intervalId, timeoutId;
+var refreshIntervalId, blackholeIntervalId, timeoutId;
 
 // called when page loads and sets up event handlers
 window.onload = function() {
@@ -28,6 +28,7 @@ window.onload = function() {
     document.getElementById("timerStart").onclick = startCount;
     document.getElementById("timerPause").onclick = stopCount;
     GameArea.canvas.onclick = removeBlackhole;
+    showHighScores();
 
 }
 
@@ -50,31 +51,44 @@ function showNext() {
 }
 
 function sortNumber(a,b) {
-    return a - b;
+    return b - a;
 }
 
 function showStart() {
-    // if (typeof(Storage) !== "undefined") {
-    //     localStorage.setItem("first", "");
-    //     localStorage.setItem("second", "");
-    //     localStorage.setItem("third", "");
-    //     }
     var highScores = new Array();
-    for (var i in localStorage) {
+    for (var i = 0; i < localStorage.length; i++) {
         highScores.push(parseInt(localStorage[i]));
     }
+    
     highScores.push(score);
-    alert(score);
     highScores.sort(sortNumber);
-    for (var i = 0; i < 3 && i < highScores.length; i++) {
-        localStorage[i] = highScores[i];
+    
+    for (var i = 0; i < highScores.length; i++) {
+        localStorage[i] = (highScores[i]); 
     }
+<<<<<<< HEAD
 
     document.getElementById("high-score").innerHTML =
     "High Scores:\n" + localStorage[0];
+=======
+    
+    showHighScores();
+>>>>>>> 23b3f5ace730836cef1dddbf3e8628dcafc87f4c
 
     document.getElementById("start-page").style.display = "block";
     document.getElementById("game-page").style.display = "none";
+}
+
+function showHighScores() {
+    var highScoreString = "High Scores: <br />";
+    var i = 0;
+    
+    while (typeof localStorage[i] != "undefined") {
+        highScoreString += localStorage[i] + "<br />"; 
+        i++;
+    }
+    
+    document.getElementById("high-score").innerHTML = highScoreString;
 }
 
 function startCount() {
@@ -326,8 +340,8 @@ function removeBlackhole(event) {
 
 function startGame() {
     // updateGameArea runs every 20th millisecond (50 times per second)
-    intervalId = setInterval(updateGameArea, 20);
-    setInterval(generateBlackhole, 1000);
+    refreshIntervalId = setInterval(updateGameArea, 20);
+    blackholeIntervalId = setInterval(generateBlackhole, 1000);
     // alert(level);
 
     var shapes = ["circle", "square", "spaceShip", "planet", "star"];
@@ -376,24 +390,24 @@ function updateGameArea() {
         blackholes[i].draw();
     }
 
-    if (time == 55) {
-        if (level == 1) {
-            document.getElementById("level-box").style.display = "block";
-            document.getElementById("current-level").innerHTML = "Level: " + level;
-            document.getElementById("current-score").innerHTML = "Score: " + score;
-            level = 2;
-            GameArea.clearCanvas();
-            stopCount();
-            clearInterval(intervalId);
-        } else if (level == 2) {
-            document.getElementById("level-box").style.display = "block";
-            document.getElementById("current-level").innerHTML = "Level: " + level;
-            document.getElementById("current-score").innerHTML = "Score: " + score;
-            GameArea.clearCanvas();
-            stopCount();
-            clearInterval(intervalId);
-        }
+    if (time == 30) {
+            alert(level);
+        levelUp();
     }
+}
+
+function levelUp() {
+    if (level == 1) {
+        level++;
+    }
+    document.getElementById("current-level").innerHTML = "Level: " + level;
+    document.getElementById("level-box").style.display = "block";
+    document.getElementById("level").innerHTML = level;  
+    document.getElementById("current-score").innerHTML = "Score: " + score;
+    GameArea.clearCanvas();
+    stopCount();
+    clearInterval(refreshIntervalId);
+    clearInterval(blackholeIntervalId);
 
 }
 
