@@ -107,7 +107,7 @@ function stopCount() {
 function timedCount() {
     document.getElementById("timerStart").style.display = "none";
     document.getElementById("timerPause").style.display = "block";
-    document.getElementById("timer").innerHTML = time;
+    document.getElementById("timer").innerHTML = time + " seconds";
     time--;
     timeoutId = setTimeout(function() { timedCount() }, 1000);
 }

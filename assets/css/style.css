@@ -62,6 +62,9 @@ button {
 }
 
 .button3 {
+    position: absolute;
+    left: 135px;
+
     background-color: white;
     color: black;
     border: 2px solid #f44336;
@@ -75,40 +78,40 @@ button {
 #level-title {
     position: absolute;
     top: 10px;
-    left: 100px;
+    left: 25px;
 }
 #level {
     position: absolute;
     top: 16px;
-    left: 200px;
+    left: 125px;
 }
 
 #score-title {
     position: absolute;
     top: 10px;
-    left: 350px;
+    left: 450px;
 }
 
 #score {
     position: absolute;
     top: 16px;
-    left: 450px;
+    left: 550px;
 }
 
 #timerStart {
     position: absolute;
     top: 10px;
-    right: 300px;
+    right: 400px;
 }
 
 #timer {
     position: absolute;
     top: 16px;
-    right: 475px;
+    right: 300px;
 }
 
 #timerPause {
     position: absolute;
     top: 10px;
-    right: 515px;
+    right: 400px;
 }
