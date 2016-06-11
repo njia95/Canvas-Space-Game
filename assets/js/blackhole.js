@@ -66,14 +66,8 @@ function showStart() {
     for (var i = 0; i < highScores.length; i++) {
         localStorage[i] = (highScores[i]); 
     }
-<<<<<<< HEAD
-
-    document.getElementById("high-score").innerHTML =
-    "High Scores:\n" + localStorage[0];
-=======
     
     showHighScores();
->>>>>>> 23b3f5ace730836cef1dddbf3e8628dcafc87f4c
 
     document.getElementById("start-page").style.display = "block";
     document.getElementById("game-page").style.display = "none";
@@ -342,7 +336,6 @@ function startGame() {
     // updateGameArea runs every 20th millisecond (50 times per second)
     refreshIntervalId = setInterval(updateGameArea, 20);
     blackholeIntervalId = setInterval(generateBlackhole, 1000);
-    // alert(level);
 
     var shapes = ["circle", "square", "spaceShip", "planet", "star"];
     var listSpikes = [3, 4, 5, 8, 16, 24];
@@ -391,7 +384,6 @@ function updateGameArea() {
     }
 
     if (time == 30) {
-            alert(level);
         levelUp();
     }
 }
