@@ -59,14 +59,14 @@ function showStart() {
     for (var i = 0; i < localStorage.length; i++) {
         highScores.push(parseInt(localStorage[i]));
     }
-    
+
     highScores.push(score);
     highScores.sort(sortNumber);
-    
+
     for (var i = 0; i < highScores.length; i++) {
-        localStorage[i] = (highScores[i]); 
+        localStorage[i] = (highScores[i]);
     }
-    
+
     showHighScores();
 
     document.getElementById("start-page").style.display = "block";
@@ -76,12 +76,12 @@ function showStart() {
 function showHighScores() {
     var highScoreString = "High Scores: <br />";
     var i = 0;
-    
+
     while (typeof localStorage[i] != "undefined") {
-        highScoreString += localStorage[i] + "<br />"; 
+        highScoreString += localStorage[i] + "<br />";
         i++;
     }
-    
+
     document.getElementById("high-score").innerHTML = highScoreString;
 }
 
@@ -293,7 +293,7 @@ class Sprite extends Component {
             if (this.x > right || this.x < this.width - 50) {
                 this.speedX = 0 - this.speedX ;
             }
-            if (this.y > bottom || this.y < this.height) {
+            if (this.y > bottom || this.y < this.height + 25) {
                 this.speedY = 0 - this.speedY;
             }
         } else {
@@ -355,6 +355,7 @@ function startGame() {
             i++;
         }
     }
+    i = 0;
 }
 
 // check if x and y were the same in the previous position
@@ -392,9 +393,13 @@ function levelUp() {
     if (level == 1) {
         level++;
     }
+    
+    // clearing the array for sprites
+    sprites = [];
+
     document.getElementById("current-level").innerHTML = "Level: " + level;
     document.getElementById("level-box").style.display = "block";
-    document.getElementById("level").innerHTML = level;  
+    document.getElementById("level").innerHTML = level;
     document.getElementById("current-score").innerHTML = "Score: " + score;
     GameArea.clearCanvas();
     stopCount();
