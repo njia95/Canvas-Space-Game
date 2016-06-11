@@ -70,7 +70,7 @@ function showStart() {
         localStorage[i] = highScores[i];
     }
 
-    document.getElementById("high-score").innerHTML = 
+    document.getElementById("high-score").innerHTML =
     "High Scores:\n" + localStorage[0];
 
     document.getElementById("start-page").style.display = "block";
@@ -285,14 +285,14 @@ class Sprite extends Component {
             if (this.x > right || this.x < this.width - 50) {
                 this.speedX = 0 - this.speedX ;
             }
-            if (this.y > bottom || this.y < this.height - 50) {
+            if (this.y > bottom || this.y < this.height) {
                 this.speedY = 0 - this.speedY;
             }
         } else {
             if (this.x > right || this.x < this.width) {
                 this.speedX = 0 - this.speedX;
             }
-            if (this.y > bottom || this.y < this.height) {
+            if (this.y > bottom || this.y < this.height + 80) {
                 this.speedY = 0 - this.speedY;
             }
         }
@@ -444,7 +444,10 @@ function generateBlackhole() {
 }
 
 function generatePosition(axis) {
-    return Math.floor(Math.random() * (axis - 200 + 1)) + 50;
+    var max = axis - 200;
+    var min = 200;
+    var pos = Math.random() * (max - min) + min;
+    return pos;
 }
 
 function generateSpeed() {
