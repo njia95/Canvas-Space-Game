@@ -1,7 +1,7 @@
 // constants of this canvas
 const MAXWIDTH = 1000, MAXHEIGHT = 640, BLUE_SCORE = 5, PURPLE_SCORE = 10,
         BLACK_SCORE = 20, HORIZON_DIST = 50, CLICK_DIST = 25,
-        BLUE_FREQUENCY = 10, PURPLE_FREQUENCY = 20, BLACK_FREQUENCY = 30,
+        BLUE_FREQUENCY = 16, PURPLE_FREQUENCY = 24, BLACK_FREQUENCY = 30,
         BLUE_IMAGE = "assets/img/blue.svg",
         PURPLE_IMAGE = "assets/img/purple.svg",
         BLACK_IMAGE = "assets/img/black.svg",
@@ -107,6 +107,7 @@ function stopCount() {
 function timedCount() {
     document.getElementById("timerStart").style.display = "none";
     document.getElementById("timerPause").style.display = "block";
+    document.getElementById("timer").style.display = "block";
     document.getElementById("timer").innerHTML = time;
     time--;
     timeoutId = setTimeout(function() { timedCount() }, 1000);
@@ -426,6 +427,7 @@ function levelUp() {
     // clearing the array for sprites
     sprites = [];
 
+    document.getElementById("timer").style.display = "none";
     document.getElementById("level-box").style.display = "block";
     document.getElementById("level").innerHTML = level;
     document.getElementById("current-score").innerHTML = "Score: " + score;
