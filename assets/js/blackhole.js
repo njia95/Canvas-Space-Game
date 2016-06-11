@@ -92,16 +92,21 @@ function startCount() {
     if (!timerOn) {
         timerOn = 1;
         timedCount();
+        document.getElementById("timerPause").style.display = "block";
     }
 }
 
 function stopCount() {
+    document.getElementById("timerStart").style.display = "block";
+    document.getElementById("timerPause").style.display = "none";
     clearTimeout(timeoutId);
     timerOn = 0;
 }
 
 // timer counts down evert 1 second
 function timedCount() {
+    document.getElementById("timerStart").style.display = "none";
+    document.getElementById("timerPause").style.display = "block";
     document.getElementById("timer").innerHTML = time;
     time--;
     timeoutId = setTimeout(function() { timedCount() }, 1000);
@@ -409,19 +414,24 @@ function updateGameArea() {
 }
 
 function levelUp() {
+    document.getElementById("current-level").innerHTML = "Level: " + level;
     if (level == 1) {
         level++;
+        document.getElementById("finish").style.display = "none";
+    } else {
+        document.getElementById("next").style.display = "none";
+        document.getElementById("finish").style.display = "block";
     }
 
     // clearing the array for sprites
     sprites = [];
 
-    document.getElementById("current-level").innerHTML = "Level: " + level;
     document.getElementById("level-box").style.display = "block";
     document.getElementById("level").innerHTML = level;
     document.getElementById("current-score").innerHTML = "Score: " + score;
     GameArea.clearCanvas();
     stopCount();
+    document.getElementById("timerStart").style.display = "none";
     clearInterval(refreshIntervalId);
     clearInterval(blackholeIntervalId);
 
