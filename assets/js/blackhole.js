@@ -75,28 +75,12 @@ function showHighScores() {
     for (var i = 0; i < highScores.length; i++) {
         localStorage[i] = (highScores[i]);
     }
-<<<<<<< HEAD
 
-    showHighScores();
-
-    document.getElementById("start-page").style.display = "block";
-    document.getElementById("game-page").style.display = "none";
-}
-
-function showHighScores() {
-    var highScoreString = "High Scores: <br />";
-    var i = 0;
-
-    while (typeof localStorage[i] != "undefined") {
-        highScoreString += localStorage[i] + "<br />";
-=======
-    
     var highScoreString = "High Scores: <br />";
     var i = 0;
     
     while (typeof localStorage[i] != "undefined" && i < HIGH_SCORE_NUM) {
         highScoreString += localStorage[i] + "<br />"; 
->>>>>>> a13c9436d697dc85c5b7bee815e8cae515d06128
         i++;
     }
 
@@ -411,10 +395,10 @@ function updateGameArea() {
     }
 
     for (var i = 0; i < blackholes.length; i++) {
-        blackholes[i].check();
-        if (blackholes[i] != null) {
+        // blackholes[i].check();
+        // if (blackholes[i] != null) {
             blackholes[i].draw();
-        }  
+        // }  
     }
 
     if (time == 30) {
