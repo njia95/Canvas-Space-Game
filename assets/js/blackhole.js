@@ -44,7 +44,10 @@ function showGame() {
 }
 
 function showNext() {
+    document.getElementById("level-box").style.display = "none";
     startGame();
+    time = 60;
+    timedCount();
 }
 
 function showStart() {
@@ -302,6 +305,7 @@ function startGame() {
     // updateGameArea runs every 20th millisecond (50 times per second)
     intervalId = setInterval(updateGameArea, 20);
     setInterval(generateBlackhole, 1000);
+    // alert(level);
     
     // generating 10 shapes
     while (sprites.length < SPRITE_MAX_NUM) {
@@ -338,6 +342,16 @@ function updateGameArea() {
     if (time == 55) {
         if (level == 1) {
             document.getElementById("level-box").style.display = "block";
+            document.getElementById("current-level").innerHTML = "Level: " + level;
+            document.getElementById("current-score").innerHTML = "Score: " + score;
+            level = 2;
+            GameArea.clearCanvas();
+            stopCount();
+            clearInterval(intervalId);
+        } else if (level == 2) {
+            document.getElementById("level-box").style.display = "block";
+            document.getElementById("current-level").innerHTML = "Level: " + level;
+            document.getElementById("current-score").innerHTML = "Score: " + score;
             GameArea.clearCanvas();
             stopCount();
             clearInterval(intervalId);
