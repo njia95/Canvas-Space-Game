@@ -5,8 +5,7 @@ const MAXWIDTH = 1000, MAXHEIGHT = 640, BLUE_SCORE = 5, PURPLE_SCORE = 10,
         BLUE_IMAGE = "assets/img/blue.svg",
         PURPLE_IMAGE = "assets/img/purple.svg",
         BLACK_IMAGE = "assets/img/black.svg",
-        BLACKHOLE_DIAMETER = 50,
-        SPRITE_MAX_NUM = 10;
+        BLACKHOLE_DIAMETER = 50;
 
 // variables for the timer
 var time = 60, timerOn = 0;
@@ -308,9 +307,23 @@ function startGame() {
     setInterval(generateBlackhole, 1000);
     // alert(level);
 
+    var shapes = ["circle", "square", "spaceShip", "planet", "star"];
+    var listSpikes = [3, 4, 5, 8, 16, 24];
+
+    var i = 0;
+    var numShapes = 5;
+    var numSpikes = 6;
+
     // generating 10 shapes
-    while (sprites.length < SPRITE_MAX_NUM) {
-        generateSprite();
+    while (sprites.length < numShapes) {
+        if (shapes[i] == "star"){
+            for (var j = 0; j < numSpikes; j++) {
+                generateSprite(shapes[i], listSpikes[j]);
+            }
+        } else {
+            generateSprite(shapes[i], 0);
+            i++;
+        }
     }
 }
 
@@ -361,11 +374,12 @@ function updateGameArea() {
 
 }
 
-function generateSprite() {
-    var shape = generateShape();
+function generateSprite(currShape, numSpikes) {
     var speedX = generateSpeed();
     var speedY = generateSpeed();
     var colour = generateColour();
+    var spikes = numSpikes;
+    var shape = currShape;
 
     // regenerate starting position if it was alrea picked
     var x, y;
@@ -383,9 +397,6 @@ function generateSprite() {
         width = 25;
         height = 25;
     }
-
-    // generating number of spikes for stars
-    var spikes = generateSpikes();
 
     // create the sprite
     sprites.push(new Sprite(width, height, x, y, speedX, speedY, colour,
@@ -407,15 +418,6 @@ function generateBlackhole() {
         blackholes.push(new Blackhole(BLACKHOLE_DIAMETER, BLACKHOLE_DIAMETER,
         generatePosition(MAXWIDTH), generatePosition(MAXHEIGHT), BLACK_IMAGE));
     }
-}
-function generateSpikes() {
-    var numSpikes = Math.floor((Math.random() * 6)) + 3;
-    return numSpikes;
-}
-function generateShape() {
-    var i = Math.floor((Math.random() * 5));
-    var shapes = ["circle", "square", "spaceShip", "star", "planet"];
-    return shapes[i];
 }
 
 function generatePosition(axis) {
