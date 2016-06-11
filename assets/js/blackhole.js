@@ -407,14 +407,19 @@ function updateGameArea() {
 }
 
 function levelUp() {
+    document.getElementById("current-level").innerHTML = "Level: " + level;
     if (level == 1) {
         level++;
+        document.getElementById("finish").style.display = "none";
+    } else {
+        document.getElementById("next").style.display = "none";
+        document.getElementById("finish").style.display = "block";
     }
     
     // clearing the array for sprites
     sprites = [];
 
-    document.getElementById("current-level").innerHTML = "Level: " + level;
+
     document.getElementById("level-box").style.display = "block";
     document.getElementById("level").innerHTML = level;
     document.getElementById("current-score").innerHTML = "Score: " + score;
