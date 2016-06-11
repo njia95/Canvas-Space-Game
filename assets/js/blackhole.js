@@ -18,7 +18,7 @@ var sprites = new Array(), blackholes = new Array();
 
 var myScore = document.getElementById("score");
 
-var intervalId, timeoutId;
+var refreshIntervalId, blackholeIntervalId, timeoutId;
 
 // called when page loads and sets up event handlers
 window.onload = function() {
@@ -334,8 +334,8 @@ function removeBlackhole(event) {
 
 function startGame() {
     // updateGameArea runs every 20th millisecond (50 times per second)
-    intervalId = setInterval(updateGameArea, 20);
-    setInterval(generateBlackhole, 1000);
+    refreshIntervalId = setInterval(updateGameArea, 20);
+    blackholeIntervalId = setInterval(generateBlackhole, 1000);
     // alert(level);
 
     var shapes = ["circle", "square", "spaceShip", "planet", "star"];
@@ -385,23 +385,23 @@ function updateGameArea() {
     }
 
     if (time == 30) {
-        if (level == 1) {
-            document.getElementById("level-box").style.display = "block";
-            document.getElementById("current-level").innerHTML = "Level: " + level;
-            document.getElementById("current-score").innerHTML = "Score: " + score;
-            level = 2;
-            GameArea.clearCanvas();
-            stopCount();
-            clearInterval(intervalId);
-        } else if (level == 2) {
-            document.getElementById("level-box").style.display = "block";
-            document.getElementById("current-level").innerHTML = "Level: " + level;
-            document.getElementById("current-score").innerHTML = "Score: " + score;
-            GameArea.clearCanvas();
-            stopCount();
-            clearInterval(intervalId);
-        }
+            alert(level);
+        levelUp();
     }
+}
+
+function levelUp() {
+    if (level == 1) {
+        level++;
+    }
+    document.getElementById("current-level").innerHTML = "Level: " + level;
+    document.getElementById("level-box").style.display = "block";
+    document.getElementById("level").innerHTML = level;  
+    document.getElementById("current-score").innerHTML = "Score: " + score;
+    GameArea.clearCanvas();
+    stopCount();
+    clearInterval(refreshIntervalId);
+    clearInterval(blackholeIntervalId);
 
 }
 
