@@ -5,7 +5,8 @@ const MAXWIDTH = 1000, MAXHEIGHT = 640, BLUE_SCORE = 5, PURPLE_SCORE = 10,
         BLUE_IMAGE = "assets/img/blue.svg",
         PURPLE_IMAGE = "assets/img/purple.svg",
         BLACK_IMAGE = "assets/img/black.svg",
-        BLACKHOLE_DIAMETER = 50;
+        BLACKHOLE_DIAMETER = 50, HIGH_SCORE_NUM = 3,
+        BLUE_PULL_SPEED = 11, PURPLE_PULL_SPEED = 7, BLACK_PULL_SPEED = 5;
 
 // variables for the timer
 var time = 60, timerOn = 0;
@@ -55,6 +56,13 @@ function sortNumber(a,b) {
 }
 
 function showStart() {
+    showHighScores();
+
+    document.getElementById("start-page").style.display = "block";
+    document.getElementById("game-page").style.display = "none";
+}
+
+function showHighScores() {
     var highScores = new Array();
     for (var i = 0; i < localStorage.length; i++) {
         highScores.push(parseInt(localStorage[i]));
@@ -67,17 +75,10 @@ function showStart() {
         localStorage[i] = (highScores[i]); 
     }
     
-    showHighScores();
-
-    document.getElementById("start-page").style.display = "block";
-    document.getElementById("game-page").style.display = "none";
-}
-
-function showHighScores() {
     var highScoreString = "High Scores: <br />";
     var i = 0;
     
-    while (typeof localStorage[i] != "undefined") {
+    while (typeof localStorage[i] != "undefined" && i < HIGH_SCORE_NUM) {
         highScoreString += localStorage[i] + "<br />"; 
         i++;
     }
@@ -131,9 +132,10 @@ class Component {
 }
 
 class Blackhole extends Component {
-    constructor(width, height, x, y, src) {
+    constructor(width, height, x, y, src, pullSpeed) {
         super(width, height, x, y);
         this.src = src;
+        this.pullSpeed = pullSpeed;
     }
 
     draw() {
@@ -265,8 +267,8 @@ class Sprite extends Component {
                 this.y <= blackholes[i].y + HORIZON_DIST) {
                 var dx = blackholes[i].x - this.x;
                 var dy = blackholes[i].y - this.y;
-                this.speedX = dx / 5;
-                this.speedY = dy / 5;
+                this.speedX = dx / blackholes[i].pullSpeed;
+                this.speedY = dy / blackholes[i].pullSpeed;
             }
         }
         this.x += this.speedX;
@@ -433,19 +435,19 @@ function generateSprite(currShape, numSpikes) {
 }
 
 function generateBlackhole() {
-    if (time % BLUE_FREQUENCY == 0 && time >= BLUE_FREQUENCY) {
+    if (time % (BLUE_FREQUENCY / level) == 0 && time >= (BLUE_FREQUENCY / level)) {
         blackholes.push(new Blackhole(BLACKHOLE_DIAMETER, BLACKHOLE_DIAMETER,
-        generatePosition(MAXWIDTH), generatePosition(MAXHEIGHT), BLUE_IMAGE));
+        generatePosition(MAXWIDTH), generatePosition(MAXHEIGHT), BLUE_IMAGE, BLUE_PULL_SPEED));
     }
 
-    if (time % PURPLE_FREQUENCY == 0 && time >= PURPLE_FREQUENCY) {
+    if (time % (PURPLE_FREQUENCY / level) == 0 && time >= (PURPLE_FREQUENCY / level)) {
         blackholes.push(new Blackhole(BLACKHOLE_DIAMETER, BLACKHOLE_DIAMETER,
-        generatePosition(MAXWIDTH), generatePosition(MAXHEIGHT), PURPLE_IMAGE));
+        generatePosition(MAXWIDTH), generatePosition(MAXHEIGHT), PURPLE_IMAGE, PURPLE_PULL_SPEED));
     }
 
-    if (time % BLACK_FREQUENCY == 0 && time >= BLACK_FREQUENCY) {
+    if (time % (BLACK_FREQUENCY / level) == 0 && time >= (BLACK_FREQUENCY / level)) {
         blackholes.push(new Blackhole(BLACKHOLE_DIAMETER, BLACKHOLE_DIAMETER,
-        generatePosition(MAXWIDTH), generatePosition(MAXHEIGHT), BLACK_IMAGE));
+        generatePosition(MAXWIDTH), generatePosition(MAXHEIGHT), BLACK_IMAGE, BLACK_PULL_SPEED));
     }
 }
 
