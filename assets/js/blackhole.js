@@ -93,12 +93,14 @@ function startCount() {
         timerOn = 1;
         timedCount();
         document.getElementById("timerPause").style.display = "block";
+        refreshIntervalId = setInterval(updateGameArea, 20);
     }
 }
 
 function stopCount() {
     document.getElementById("timerStart").style.display = "block";
     document.getElementById("timerPause").style.display = "none";
+    clearInterval(refreshIntervalId);
     clearTimeout(timeoutId);
     timerOn = 0;
 }
