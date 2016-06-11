@@ -6,7 +6,8 @@ const MAXWIDTH = 1000, MAXHEIGHT = 640, BLUE_SCORE = 5, PURPLE_SCORE = 10,
         PURPLE_IMAGE = "assets/img/purple.svg",
         BLACK_IMAGE = "assets/img/black.svg",
         BLACKHOLE_DIAMETER = 50, HIGH_SCORE_NUM = 3,
-        BLUE_PULL_SPEED = 11, PURPLE_PULL_SPEED = 7, BLACK_PULL_SPEED = 5;
+        BLUE_PULL_SPEED = 11, PURPLE_PULL_SPEED = 7, BLACK_PULL_SPEED = 5,
+        BLUE_EAT = 3, PURPLE_EAT = 2, BLACK_EAT = 1;
 
 // variables for the timer
 var time = 60, timerOn = 0;
@@ -132,10 +133,12 @@ class Component {
 }
 
 class Blackhole extends Component {
-    constructor(width, height, x, y, src, pullSpeed) {
+    constructor(width, height, x, y, src, pullSpeed, eatLimit) {
         super(width, height, x, y);
         this.src = src;
         this.pullSpeed = pullSpeed;
+        this.eatLimit = eatLimit;
+        this.eatHowMany = 0;
     }
 
     draw() {
@@ -143,6 +146,13 @@ class Blackhole extends Component {
         this.image = new Image();
         this.image.src = this.src;
         ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+    }
+    
+    check() {
+        if (this.eatHowMany = this.eatLimit) {
+            var idx = blackholes.indexOf(this);
+            blackholes.splice(idx, 1);
+        }        
     }
 }
 
@@ -273,7 +283,6 @@ class Sprite extends Component {
         }
         this.x += this.speedX;
         this.y += this.speedY;
-
         for (var i = 0; i < blackholes.length; i++) {
             if (this.x >= blackholes[i].x - 10 &&
                 this.x <= blackholes[i].x + 10 &&
@@ -282,6 +291,9 @@ class Sprite extends Component {
                 var idx = sprites.indexOf(this);
                 sprites.splice(idx, 1);
                 score -= 50;
+                
+                blackholes[i].eatHowMany++;
+
             }
         }
         this.check();
@@ -382,7 +394,10 @@ function updateGameArea() {
     }
 
     for (var i = 0; i < blackholes.length; i++) {
-        blackholes[i].draw();
+        blackholes[i].check();
+        if (blackholes[i] != null) {
+            blackholes[i].draw();
+        }  
     }
 
     if (time == 30) {
@@ -437,17 +452,20 @@ function generateSprite(currShape, numSpikes) {
 function generateBlackhole() {
     if (time % (BLUE_FREQUENCY / level) == 0 && time >= (BLUE_FREQUENCY / level)) {
         blackholes.push(new Blackhole(BLACKHOLE_DIAMETER, BLACKHOLE_DIAMETER,
-        generatePosition(MAXWIDTH), generatePosition(MAXHEIGHT), BLUE_IMAGE, BLUE_PULL_SPEED));
+        generatePosition(MAXWIDTH), generatePosition(MAXHEIGHT), BLUE_IMAGE, 
+        BLUE_PULL_SPEED, BLUE_EAT));
     }
 
     if (time % (PURPLE_FREQUENCY / level) == 0 && time >= (PURPLE_FREQUENCY / level)) {
         blackholes.push(new Blackhole(BLACKHOLE_DIAMETER, BLACKHOLE_DIAMETER,
-        generatePosition(MAXWIDTH), generatePosition(MAXHEIGHT), PURPLE_IMAGE, PURPLE_PULL_SPEED));
+        generatePosition(MAXWIDTH), generatePosition(MAXHEIGHT), PURPLE_IMAGE, 
+        PURPLE_PULL_SPEED, PURPLE_EAT));
     }
 
     if (time % (BLACK_FREQUENCY / level) == 0 && time >= (BLACK_FREQUENCY / level)) {
         blackholes.push(new Blackhole(BLACKHOLE_DIAMETER, BLACKHOLE_DIAMETER,
-        generatePosition(MAXWIDTH), generatePosition(MAXHEIGHT), BLACK_IMAGE, BLACK_PULL_SPEED));
+        generatePosition(MAXWIDTH), generatePosition(MAXHEIGHT), BLACK_IMAGE, 
+        BLACK_PULL_SPEED, BLACK_EAT));
     }
 }
 
