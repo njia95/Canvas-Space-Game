@@ -19,6 +19,8 @@ var sprites = new Array(), blackholes = new Array();
 
 var myScore = document.getElementById("score");
 
+var intervalId, timeoutId;
+
 // called when page loads and sets up event handlers
 window.onload = function() {
     document.getElementById("finish").onclick = showStart;
@@ -51,7 +53,7 @@ function startCount() {
 }
 
 function stopCount() {
-    clearTimeout(t);
+    clearTimeout(timeoutId);
     timerOn = 0;
 }
 
@@ -59,7 +61,7 @@ function stopCount() {
 function timedCount() {
     document.getElementById("timer").innerHTML = time;
     time--;
-    setTimeout(function() { timedCount() }, 1000);
+    timeoutId = setTimeout(function() { timedCount() }, 1000);
 }
 
 var GameArea = {
@@ -73,7 +75,7 @@ var GameArea = {
         gamePage.insertBefore(this.canvas, gamePage.childNodes[0]);
 
         // updateGameArea runs every 20th millisecond (50 times per second)
-        setInterval(updateGameArea, 20);
+        intervalId = setInterval(updateGameArea, 20);
         setInterval(generateBlackhole, 1000);
     },
 
@@ -327,10 +329,16 @@ function updateGameArea() {
     for (var i = 0; i < blackholes.length; i++) {
         blackholes[i].draw();
     }
-
-    if (level == 1 && time == 0) {
-        document.getElementById("level-box").style.display = "block";
+    
+    if (time == 55) {
+        if (level == 1) {
+            document.getElementById("level-box").style.display = "block";
+            GameArea.clearCanvas();
+            stopCount();
+            clearInterval(intervalId);
+        }
     }
+
 }
 
 function generateSprite() {
