@@ -384,9 +384,15 @@ function startGame() {
 }
 
 // check if x and y were the same in the previous position
-function checkSamePosition(x, y) {
-    for (var i = 0; i < sprites.length; i++) {
-        if (x == sprites[i].x && y == sprites[i].y) {
+function checkSamePosition(list, x, y) {
+    var leftMost, rightMost, upMost, downMost;
+    for (var i = 0; i < list.length; i++) {
+        leftMost = sprites[i].x - 50;
+        rightMost = sprites[i].x + 50;
+        upMost = sprites[i].y - 50;
+        downMost = sprites[i].y + 50;
+        if (leftMost <= x && x <= rightMost
+            && upMost<= y && y <= downMost) {
             return true;
         }
     }
@@ -454,7 +460,7 @@ function generateSprite(currShape, numSpikes) {
     do {
         x = generatePosition(MAXWIDTH);
         y = generatePosition(MAXHEIGHT);
-    } while (checkSamePosition(x, y));
+    } while (checkSamePosition(sprites, x, y));
 
     // setting the values according to the shapes
     var width, height;
@@ -472,21 +478,35 @@ function generateSprite(currShape, numSpikes) {
 }
 
 function generateBlackhole() {
+    var x, y;
+
     if (time % (BLUE_FREQUENCY / level) == 0 && time >= (BLUE_FREQUENCY / level)) {
+        do {
+            x = generatePosition(MAXWIDTH);
+            y = generatePosition(MAXHEIGHT);
+        } while (checkSamePosition(blackholes, x, y));
         blackholes.push(new Blackhole(BLACKHOLE_DIAMETER, BLACKHOLE_DIAMETER,
-        generatePosition(MAXWIDTH), generatePosition(MAXHEIGHT), BLUE_IMAGE,
+        x, y, BLUE_IMAGE,
         BLUE_PULL_SPEED, BLUE_EAT));
     }
 
     if (time % (PURPLE_FREQUENCY / level) == 0 && time >= (PURPLE_FREQUENCY / level)) {
+        do {
+            x = generatePosition(MAXWIDTH);
+            y = generatePosition(MAXHEIGHT);
+        } while (checkSamePosition(blackholes, x, y));
         blackholes.push(new Blackhole(BLACKHOLE_DIAMETER, BLACKHOLE_DIAMETER,
-        generatePosition(MAXWIDTH), generatePosition(MAXHEIGHT), PURPLE_IMAGE,
+        x, y, PURPLE_IMAGE,
         PURPLE_PULL_SPEED, PURPLE_EAT));
     }
 
     if (time % (BLACK_FREQUENCY / level) == 0 && time >= (BLACK_FREQUENCY / level)) {
+        do {
+            x = generatePosition(MAXWIDTH);
+            y = generatePosition(MAXHEIGHT);
+        } while (checkSamePosition(blackholes, x, y));
         blackholes.push(new Blackhole(BLACKHOLE_DIAMETER, BLACKHOLE_DIAMETER,
-        generatePosition(MAXWIDTH), generatePosition(MAXHEIGHT), BLACK_IMAGE,
+        x, y, BLACK_IMAGE,
         BLACK_PULL_SPEED, BLACK_EAT));
     }
 }
@@ -501,6 +521,7 @@ function generatePosition(axis) {
 function generateSpeed() {
     var speedz = [-2, 1, 1, 2];
     var i = Math.floor((Math.random() * 4));
+
     return speedz[i];
 }
 
