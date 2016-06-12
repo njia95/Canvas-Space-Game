@@ -37,6 +37,9 @@ window.onload = function() {
 
 // onclick functions
 function showGame() {
+    time = 60;
+    score = 200;
+    level = 1;
     document.getElementById("game-page").style.display = "block";
     document.getElementById("start-page").style.display = "none";
     document.getElementById("level-box").style.display = "none";
@@ -66,23 +69,31 @@ function showStart() {
 
 function showHighScores() {
     var highScores = new Array();
+    var highScoreString = "High Scores: <br />";
+    var j = 0;
+    
+    if (typeof localStorage[0] == "undefined") {
+        for (var i = 0; i < HIGH_SCORE_NUM; i++) {
+            localStorage[i] = 0;
+        }   
+    }
     for (var i = 0; i < localStorage.length; i++) {
         highScores.push(parseInt(localStorage[i]));
     }
-
-    highScores.push(score);
+    
+    if (score != 200) {
+        highScores.push(score);
+    }
+    
     highScores.sort(sortNumber);
 
-    for (var i = 0; i < highScores.length; i++) {
-        localStorage[i] = (highScores[i]);
+    for (var i = 0; i < HIGH_SCORE_NUM; i++) {
+        localStorage[i] = highScores[i];
     }
 
-    var highScoreString = "High Scores: <br />";
-    var i = 0;
-
-    while (typeof localStorage[i] != "undefined" && i < HIGH_SCORE_NUM) {
-        highScoreString += localStorage[i] + "<br />";
-        i++;
+    while (j < HIGH_SCORE_NUM) {
+        highScoreString += localStorage[j] + "<br />";
+        j++;
     }
 
     document.getElementById("high-score").innerHTML = highScoreString;
