@@ -61,8 +61,9 @@ function sortNumber(a,b) {
 }
 
 function showStart() {
+    clearInterval(blackholeIntervalId);
     showHighScores();
-
+    
     document.getElementById("start-page").style.display = "block";
     document.getElementById("game-page").style.display = "none";
 }
@@ -432,6 +433,7 @@ function levelUp() {
     document.getElementById("current-level").innerHTML = "Level: " + level;
     if (level == 1) {
         level++;
+        document.getElementById("next").style.display = "block";
         document.getElementById("finish").style.display = "none";
     } else {
         document.getElementById("next").style.display = "none";
