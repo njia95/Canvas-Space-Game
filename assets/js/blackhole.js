@@ -427,22 +427,26 @@ class Sprite extends Component {
     }
 }
 
-// remove blacholes from the array once clicked; assign scores given different
-// kinds of blackholes clicked
+// remove blacholes from the array once clicked
 function removeBlackhole(event) {
     var clickX = event.clientX - 10;
     var clickY = event.clientY - 10;
 
+    // loop through all existing blackholes
     for (let i = 0; i < blackholes.length; i++) {
-        if (clickX >= blackholes[i].x - CLICK_DIST&&
+        // check click distances
+        if (clickX >= blackholes[i].x - CLICK_DIST &&
             clickX <= blackholes[i].x + CLICK_DIST &&
             clickY >= blackholes[i].y - CLICK_DIST &&
             clickY <= blackholes[i].y + CLICK_DIST) {
 
-            var removed = blackholes.splice(i, 1); // remove one blackhole
-            if ((removed[0].src) == BLUE_IMAGE) { // blue
+            // remove one blackhole
+            var removed = blackholes.splice(i, 1);
+            
+            // assign scores given different kinds of blackholes clicked
+            if ((removed[0].src) == BLUE_IMAGE) {
                 score += BLUE_SCORE;
-            } else if ((removed[0].src) == PURPLE_IMAGE) { // purple
+            } else if ((removed[0].src) == PURPLE_IMAGE) {
                 score += PURPLE_SCORE;
             } else {
                 score += BLACK_SCORE;
@@ -451,7 +455,7 @@ function removeBlackhole(event) {
     }
 }
 
-
+// start the game
 function startGame() {
     // updateGameArea runs every 20th millisecond (50 times per second)
     refreshIntervalId = setInterval(updateGameArea, 20);
@@ -459,6 +463,7 @@ function startGame() {
 
     // list of possible shapes
     var shapes = ["circle", "square", "spaceShip", "planet", "star"];
+    
     // list of possible number of spikes
     var listSpikes = [3, 4, 5, 8, 16, 24];
 
@@ -470,7 +475,7 @@ function startGame() {
     // generating 10 shapes
     while (sprites.length < numShapes) {
         // speicial case if it is a star
-        if (shapes[i] == "star"){
+        if (shapes[i] == "star") {
             for (var j = 0; j < numSpikes; j++) {
                 generateSprite(shapes[i], listSpikes[j]);
             }
@@ -482,7 +487,7 @@ function startGame() {
     i = 0; // reset for next level
 }
 
-// check if x and y were the same in the previous position
+// check if newly generated positions are the same
 function checkSamePosition(list, x, y) {
     var leftMost, rightMost, upMost, downMost;
     for (var i = 0; i < list.length; i++) {
@@ -491,8 +496,8 @@ function checkSamePosition(list, x, y) {
             rightMost = sprites[i].x + 50;
             upMost = sprites[i].y - 50;
             downMost = sprites[i].y + 50;
-            if (leftMost <= x && x <= rightMost
-                && upMost <= y && y <= downMost) {
+            if (leftMost <= x && x <= rightMost && 
+                upMost <= y && y <= downMost) {
                 return true;
             }
         }
@@ -500,11 +505,17 @@ function checkSamePosition(list, x, y) {
     return false;
 }
 
+
+// main function for updating the game area
 function updateGameArea() {
+    
+    // clear the canvas
     GameArea.clearCanvas();
 
+    // update the score
     document.getElementById("score").innerHTML = score;
 
+    // redraw every sprite after moving
     for (var i = 0; i < sprites.length; i++) {
         sprites[i].newPos();
         if (sprites[i] != null) {
@@ -512,20 +523,24 @@ function updateGameArea() {
         }
     }
 
+    // redraw every blackhole that has not eaten enough
     for (var i = 0; i < blackholes.length; i++) {
-        // blackholes[i].draw();
         if (! (blackholes[i].checkLimit())) {
             blackholes[i].draw();
         }
     }
 
+    // when the time is up, stop the game
     if (time == 0) {
         levelUp();
     }
 }
 
+// dsiplay the level box when finishing one level
 function levelUp() {
     document.getElementById("current-level").innerHTML = "Level: " + level;
+    
+    // update current level accordingly
     if (level == 1) {
         level++;
         document.getElementById("next").style.display = "block";
@@ -538,16 +553,22 @@ function levelUp() {
     // clearing the array for sprites
     sprites = [];
 
+    // dispaly/hide elements
     document.getElementById("timer").style.display = "none";
     document.getElementById("level-box").style.display = "block";
     document.getElementById("level").innerHTML = level;
     document.getElementById("current-score").innerHTML = "Score: " + score;
-    GameArea.clearCanvas();
-    stopCount();
     document.getElementById("timerStart").style.display = "none";
+    
+    // stop refreshing the canvas and generating blackholes
     clearInterval(refreshIntervalId);
     clearInterval(blackholeIntervalId);
-
+    
+    // clear everything from canvas
+    GameArea.clearCanvas();
+    
+    // stop the timer
+    stopCount();
 }
 
 // generate a sprite object
