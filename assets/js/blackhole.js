@@ -108,7 +108,7 @@ function showStart() {
     
     // display high scores
     showHighScores();
-    
+
     // display and hide elements
     document.getElementById("start-page").style.display = "block";
     document.getElementById("game-page").style.display = "none";
@@ -124,7 +124,7 @@ function showHighScores() {
     if (typeof localStorage[0] == "undefined") {
         for (var i = 0; i < HIGH_SCORE_NUM; i++) {
             localStorage[i] = 0;
-        }   
+        }
     }
     
     // pass all scores from local storage to an array
@@ -216,60 +216,67 @@ var GameArea = {
     }
 }
 
-// this class used for creating sprites
+// this class used for creating any mobing objects in the game
 class Component {
+    // the constructor for Component
     constructor(width, height, x, y) {
-        this.width = width;
-        this.height = height;
-        this.x = x;
-        this.y = y;
+        this.width = width; // width
+        this.height = height;   // height
+        this.x = x; // x position
+        this.y = y; // y position
     }
 }
 
+// this class is used for creating a blackhole
 class Blackhole extends Component {
+    // the constructor for Blackhole
     constructor(width, height, x, y, src, pullSpeed, eatLimit) {
         super(width, height, x, y);
-        this.src = src;
-        this.pullSpeed = pullSpeed;
-        this.eatLimit = eatLimit;
-        this.eaten = 0;
+        this.src = src; // the image link
+        this.pullSpeed = pullSpeed; // the pull speed
+        this.eatLimit = eatLimit; // the limit of how many it can eat
+        this.eaten = 0; // how many has the blackhole eaten
     }
-
+    // draw the Blackhole with the provided Blackhole image
     draw() {
         var ctx = GameArea.context;
+        // creating a new image object
         this.image = new Image();
         this.image.src = this.src;
         ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
     }
-
+    // check if the black has reached its full
     checkLimit() {
         return this.eaten == this.eatLimit;
     }
-
+    // increate number of sprites of the blackhole eating
     ateOne() {
         this.eaten++;
     }
 }
 
+// the sprites that might get eaten by blackholes
 class Sprite extends Component {
+    // the constructor for Sprite
     constructor(width, height, x, y, speedX, speedY, color, shape, spikes = 5) {
         super(width, height, x, y);
-        this.speedX = speedX;
-        this.speedY = speedY;
-        this.color = color;
-        this.shape = shape;
-        this.spikes = spikes;
+        this.speedX = speedX;   // horizontal speed
+        this.speedY = speedY;   // vertical speedY
+        this.color = color;     //colour
+        this.shape = shape;     // shape
+        this.spikes = spikes;   // number of spikes it has
     }
     // draw different shapes
     draw() {
         var ctx = GameArea.context;
+        // draw a circle
         if (this.shape == "circle") {
             ctx.beginPath();
             ctx.arc(this.x, this.y, 25, 0, 2 * Math.PI);
             ctx.closePath();
             ctx.fillStyle = this.color;
             ctx.fill();
-
+        // draw a planet with a right around it
         } else if (this.shape == "planet") {
             var centerX = this.x;
             var centerY = this.y;
@@ -285,28 +292,31 @@ class Sprite extends Component {
 
             // oval
             ctx.beginPath();
-            ctx.moveTo(centerX, centerY - height/2); // A1
+            ctx.moveTo(centerX, centerY - height / 2); // A1
             ctx.bezierCurveTo(
-                centerX + width/2, centerY - height/2, // C1
-                centerX + width/2, centerY + height/2, // C2
+                centerX + width / 2, centerY - height / 2, // C1
+                centerX + width / 2, centerY + height / 2, // C2
                 centerX, centerY + height/2); // A2
             ctx.bezierCurveTo(
-                centerX - width/2, centerY + height/2, // C3
-                centerX - width/2, centerY - height/2, // C4
-                centerX, centerY - height/2); // A1
+                centerX - width / 2, centerY + height / 2, // C3
+                centerX - width / 2, centerY - height / 2, // C4
+                centerX, centerY - height / 2); // A1
             ctx.closePath();
             ctx.strokeStyle = generateColour();
             ctx.stroke();
 
+        // draw a square
         } else if (this.shape == "square") {
             ctx.fillStyle = this.color;
             ctx.fillRect(this.x, this.y, this.width, this.height);
+
+        // draw a star
         } else if (this.shape == "star") {
-            var rot = Math.PI/2*3;
+            var rot = Math.PI / 2 * 3;
             var x = this.x;
             var y = this.y;
             var spikes = this.spikes;
-            var step=Math.PI/spikes;
+            var step = Math.PI / spikes;
             var outerRadius = 25;
             var innerRadius = 10;
 
@@ -330,8 +340,9 @@ class Sprite extends Component {
             ctx.stroke();
             ctx.fillStyle = generateColour();
             ctx.fill();
+
+        // Draw a space ship
         } else if (this.shape == "spaceShip") {
-            // spaceShip
             ctx.beginPath();
             ctx.moveTo(this.x, this.y - 25);
             ctx.lineTo(this.x + 10, this.y);
@@ -339,7 +350,6 @@ class Sprite extends Component {
             ctx.fillStyle = "blue";
             ctx.fill();
             ctx.closePath();
-
 
             ctx.beginPath();
             ctx.fillStyle = "yellow";
@@ -363,8 +373,8 @@ class Sprite extends Component {
 
         }
     }
-
-    newPos() { // change position
+    // change position
+    newPos() {
         for (var i = 0; i < blackholes.length; i++) {
             if (this.x >= blackholes[i].x - HORIZON_DIST &&
                 this.x <= blackholes[i].x + HORIZON_DIST &&
@@ -393,11 +403,12 @@ class Sprite extends Component {
         }
         this.check();
     }
-
-    check() { // check for boundary conditions
+    // check for boundary conditions
+    check() {
         var right = GameArea.canvas.width - this.width;
         var bottom = GameArea.canvas.height - this.height;
 
+        // spacial case for squares
         if (this.shape == "square") {
             if (this.x > right || this.x < this.width - 50) {
                 this.speedX = 0 - this.speedX ;
@@ -446,15 +457,19 @@ function startGame() {
     refreshIntervalId = setInterval(updateGameArea, 20);
     blackholeIntervalId = setInterval(generateBlackhole, 1000);
 
+    // list of possible shapes
     var shapes = ["circle", "square", "spaceShip", "planet", "star"];
+    // list of possible number of spikes
     var listSpikes = [3, 4, 5, 8, 16, 24];
 
+    // the current position of shapes
     var i = 0;
-    var numShapes = 5;
-    var numSpikes = 6;
+    var numShapes = shapes.length;
+    var numSpikes = listSpikes.length;
 
     // generating 10 shapes
     while (sprites.length < numShapes) {
+        // speicial case if it is a star
         if (shapes[i] == "star"){
             for (var j = 0; j < numSpikes; j++) {
                 generateSprite(shapes[i], listSpikes[j]);
@@ -464,20 +479,22 @@ function startGame() {
             i++;
         }
     }
-    i = 0;
+    i = 0; // reset for next level
 }
 
 // check if x and y were the same in the previous position
 function checkSamePosition(list, x, y) {
     var leftMost, rightMost, upMost, downMost;
     for (var i = 0; i < list.length; i++) {
-        leftMost = sprites[i].x - 50;
-        rightMost = sprites[i].x + 50;
-        upMost = sprites[i].y - 50;
-        downMost = sprites[i].y + 50;
-        if (leftMost <= x && x <= rightMost
-            && upMost<= y && y <= downMost) {
-            return true;
+        if (typeof sprites[i] != "undefined") {
+            leftMost = sprites[i].x - 50;
+            rightMost = sprites[i].x + 50;
+            upMost = sprites[i].y - 50;
+            downMost = sprites[i].y + 50;
+            if (leftMost <= x && x <= rightMost
+                && upMost <= y && y <= downMost) {
+                return true;
+            }
         }
     }
     return false;
