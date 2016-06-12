@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <!-- some info about this project -->
         <meta charset="utf-8">
         <meta name="title" content="Blackhole">
         <meta name="description" content="Assignment 2 for CSC309">
@@ -12,27 +13,44 @@
         <script src="assets/js/blackhole.js" type="text/javascript" async></script>
     </head>
     <body>
+        <!-- the start page of the game -->
         <article id="start-page">
+            <!-- the info box that contains intereactive buttons and info-->
             <section class="box">
+                <!-- the title of the game  -->
                 <h2 id="title">Blackhole</h2>
+                <!-- the list of hight scores -->
                 <h2 id="high-score">High Scores: </h2>
+                <!-- the start button to start the game -->
                 <button class="button1" id="start">Start</button>
             </section>
         </article>
+        <!-- the actual game page -->
         <article id="game-page">
+            <!-- the information bar -->
             <section id="info">
+                <!-- current level -->
                 <h2 id="level-title">Level: </h2>
                 <h3 id="level"></h3>
+                <!-- current score -->
                 <h2 id="score-title">Score: </h2>
-                <h3 id="score"></h3> 
-                <button id="timerStart">Start count</button>
+                <h3 id="score"></h3>
+                <!-- start button when paused -->
+                <button class="button4" id="timerStart">resume</button>
+                <!-- the current time -->
                 <h3 id="timer"></h3>
-                <button id="timerPause">Stop count</button>
+                <!-- the pause button -->
+                <button class="button4"id="timerPause">pause</button>
             </section>
+            <!-- Transitional box -->
             <section id="level-box" class="box game-box">
+                <!-- the current level -->
                 <h2 id="current-level"></h2>
+                <!-- the current game score -->
                 <h2 id="current-score"></h2>
+                <!-- the next button to go into next level -->
                 <button class="button2" id="next">Next</button>
+                <!-- the finisht button to go back to the start-page  -->
                 <button class="button3" id="finish">Finish</button>
             </section>
         </article>
