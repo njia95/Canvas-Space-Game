@@ -7,12 +7,12 @@ const BLUE_SCORE = 5, PURPLE_SCORE = 10, BLACK_SCORE = 20;
 // how many seocnds to generate a new blackhole in the first level
 const BLUE_FREQUENCY = 16, PURPLE_FREQUENCY = 24, BLACK_FREQUENCY = 30;
 
-// paths for all three balckhole svg files (public domain)      
-const BLUE_IMAGE = "assets/img/blue.svg", 
+// paths for all three balckhole svg files (public domain)
+const BLUE_IMAGE = "assets/img/blue.svg",
       PURPLE_IMAGE = "assets/img/purple.svg",
       BLACK_IMAGE = "assets/img/black.svg";
-    
-// pull speed of blackhoels  
+
+// pull speed of blackhoels
 const BLUE_PULL_SPEED = 11, PURPLE_PULL_SPEED = 7, BLACK_PULL_SPEED = 5;
 
 // limits of objects each blackhole can take before they disappear
@@ -51,7 +51,7 @@ window.onload = function() {
     document.getElementById("timerStart").onclick = startCount;
     document.getElementById("timerPause").onclick = stopCount;
     GameArea.canvas.onclick = removeBlackhole;
-    
+
     // update and display high scores
     showHighScores();
 }
@@ -62,21 +62,21 @@ function showGame() {
     time = 60;
     score = 200;
     level = 1;
-    
+
     // display and undisplay elements
     document.getElementById("game-page").style.display = "block";
     document.getElementById("start-page").style.display = "none";
     document.getElementById("level-box").style.display = "none";
-    
+
     // display the current level
     document.getElementById("level").innerHTML = level;
-    
+
     // initialize game canvas
     GameArea.initializeCanvas();
-    
+
     // start the game
     startGame();
-    
+
     // start the timer count
     timedCount();
 }
@@ -85,10 +85,10 @@ function showGame() {
 function showNext() {
     // hide the level box
     document.getElementById("level-box").style.display = "none";
-    
+
     // only reset the time, keep score and level
     time = 60;
-    
+
     // start the second level
     startGame();
 
@@ -105,7 +105,7 @@ function sortNumber(a,b) {
 function showStart() {
     // stop generating blacholes under the hood
     clearInterval(blackholeIntervalId);
-    
+
     // display high scores
     showHighScores();
 
@@ -119,24 +119,24 @@ function showHighScores() {
     var highScores = new Array();
     var highScoreString = "High Scores: <br />";
     var j = 0;
-    
+
     // set first few high scores to 0 if first time game paly
     if (typeof localStorage[0] == "undefined") {
         for (var i = 0; i < HIGH_SCORE_NUM; i++) {
             localStorage[i] = 0;
         }
     }
-    
+
     // pass all scores from local storage to an array
     for (var i = 0; i < localStorage.length; i++) {
         highScores.push(parseInt(localStorage[i]));
     }
-    
+
     // push the score if finished the game play
     if (score != 200) {
         highScores.push(score);
     }
-    
+
     // sort exisitng high scores
     highScores.sort(sortNumber);
 
@@ -161,7 +161,7 @@ function startCount() {
         timerOn = 1;
         timedCount();
         document.getElementById("timerPause").style.display = "block";
-        
+
         // set refresh rate for the game area
         refreshIntervalId = setInterval(updateGameArea, 20);
     }
@@ -170,11 +170,11 @@ function startCount() {
 // pause the tiemr
 function stopCount() {
     timerOn = 0;
-    
+
     // display/hdie elements
     document.getElementById("timerStart").style.display = "block";
     document.getElementById("timerPause").style.display = "none";
-    
+
     // stop refreshing the game area and geenrating blackholes
     clearInterval(refreshIntervalId);
     clearTimeout(timeoutId);
@@ -197,14 +197,14 @@ function timedCount() {
 var GameArea = {
     // create the canvas obejct
     canvas : document.createElement("canvas"),
-    
+
     // initialize the canvas
     initializeCanvas() {
         // set the basic parameters
         this.canvas.width = MAXWIDTH;
         this.canvas.height = MAXHEIGHT;
         this.context = this.canvas.getContext("2d");
-        
+
         // insert canvas as the first child of game page
         var gamePage = document.getElementById("game-page");
         gamePage.insertBefore(this.canvas, gamePage.childNodes[0]);
@@ -550,12 +550,13 @@ function levelUp() {
 
 }
 
+// generate a sprite object
 function generateSprite(currShape, numSpikes) {
-    var speedX = generateSpeed();
-    var speedY = generateSpeed();
-    var colour = generateColour();
-    var spikes = numSpikes;
-    var shape = currShape;
+    var speedX = generateSpeed(); // the horizontal speed
+    var speedY = generateSpeed();   // the vertical speed
+    var colour = generateColour();  // the colour of the sprite
+    var spikes = numSpikes;    // the number of spikes it has
+    var shape = currShape;  // the shape of the spikes
 
     // regenerate starting position if it was alrea picked
     var x, y;
@@ -574,45 +575,57 @@ function generateSprite(currShape, numSpikes) {
         height = 25;
     }
 
-    // create the sprite
+    // create the sprite and put it into the spites list
     sprites.push(new Sprite(width, height, x, y, speedX, speedY, colour,
     shape, spikes));
 }
 
+// generate a Blackhole object
 function generateBlackhole() {
-    var x, y;
+    var x, y;   // x, y position
 
-    if (time % (BLUE_FREQUENCY / level) == 0 && time >= (BLUE_FREQUENCY / level)) {
+    // blue blackhole
+    if (time % (BLUE_FREQUENCY / level) == 0 && time >= (BLUE_FREQUENCY
+        / level)) {
+        // generate x, y
         do {
             x = generatePosition(MAXWIDTH);
             y = generatePosition(MAXHEIGHT);
         } while (checkSamePosition(blackholes, x, y));
+        // create the blackhole
         blackholes.push(new Blackhole(BLACKHOLE_DIAMETER, BLACKHOLE_DIAMETER,
-        x, y, BLUE_IMAGE,
-        BLUE_PULL_SPEED, BLUE_EAT));
+        x, y, BLUE_IMAGE, BLUE_PULL_SPEED, BLUE_EAT));
     }
 
-    if (time % (PURPLE_FREQUENCY / level) == 0 && time >= (PURPLE_FREQUENCY / level)) {
+    //purple blackhole
+    if (time % (PURPLE_FREQUENCY / level) == 0 && time >= (PURPLE_FREQUENCY
+        / level)) {
+        // generate x, y
         do {
             x = generatePosition(MAXWIDTH);
             y = generatePosition(MAXHEIGHT);
         } while (checkSamePosition(blackholes, x, y));
+        // create the blackhole
         blackholes.push(new Blackhole(BLACKHOLE_DIAMETER, BLACKHOLE_DIAMETER,
-        x, y, PURPLE_IMAGE,
-        PURPLE_PULL_SPEED, PURPLE_EAT));
+        x, y, PURPLE_IMAGE, PURPLE_PULL_SPEED, PURPLE_EAT));
     }
 
-    if (time % (BLACK_FREQUENCY / level) == 0 && time >= (BLACK_FREQUENCY / level)) {
+    // real blackhole
+    if (time % (BLACK_FREQUENCY / level) == 0 && time >= (BLACK_FREQUENCY
+        / level)) {
+        // generate x, y
         do {
             x = generatePosition(MAXWIDTH);
             y = generatePosition(MAXHEIGHT);
         } while (checkSamePosition(blackholes, x, y));
+        // create the blackhole
         blackholes.push(new Blackhole(BLACKHOLE_DIAMETER, BLACKHOLE_DIAMETER,
         x, y, BLACK_IMAGE,
         BLACK_PULL_SPEED, BLACK_EAT));
     }
 }
 
+// generate random positions within the boundary
 function generatePosition(axis) {
     var max = axis - 200;
     var min = 200;
@@ -620,13 +633,14 @@ function generatePosition(axis) {
     return pos;
 }
 
+// generate random speed
 function generateSpeed() {
     var speedz = [-2, 1, 1, 2];
     var i = Math.floor((Math.random() * 4));
-
     return speedz[i];
 }
 
+// generate random colours
 function generateColour() {
     var colours = ["red", "orange", "yellow", "green", "blue"];
     var i = Math.floor((Math.random() * 5));
