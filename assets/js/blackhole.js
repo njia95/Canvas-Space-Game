@@ -1,13 +1,34 @@
-// constants of this canvas
-const MAXWIDTH = 1000, MAXHEIGHT = 640, BLUE_SCORE = 5, PURPLE_SCORE = 10,
-        BLACK_SCORE = 20, HORIZON_DIST = 50, CLICK_DIST = 25,
-        BLUE_FREQUENCY = 16, PURPLE_FREQUENCY = 24, BLACK_FREQUENCY = 30,
-        BLUE_IMAGE = "assets/img/blue.svg",
-        PURPLE_IMAGE = "assets/img/purple.svg",
-        BLACK_IMAGE = "assets/img/black.svg",
-        BLACKHOLE_DIAMETER = 50, HIGH_SCORE_NUM = 3,
-        BLUE_PULL_SPEED = 11, PURPLE_PULL_SPEED = 7, BLACK_PULL_SPEED = 5,
-        BLUE_EAT = 3, PURPLE_EAT = 2, BLACK_EAT = 1;
+// height and width of this canvas
+const MAXWIDTH = 1000, MAXHEIGHT = 640;
+
+// scores for balckholes once clicked
+const BLUE_SCORE = 5, PURPLE_SCORE = 10, BLACK_SCORE = 20;
+
+// how many seocnds to generate a new blackhole in the first level
+const BLUE_FREQUENCY = 16, PURPLE_FREQUENCY = 24, BLACK_FREQUENCY = 30;
+
+// paths for all three balckhole svg files (public domain)      
+const BLUE_IMAGE = "assets/img/blue.svg", 
+      PURPLE_IMAGE = "assets/img/purple.svg",
+      BLACK_IMAGE = "assets/img/black.svg";
+    
+// pull speed of blackhoels  
+const BLUE_PULL_SPEED = 11, PURPLE_PULL_SPEED = 7, BLACK_PULL_SPEED = 5;
+
+// limits of objects each blackhole can take before they disappear
+const BLUE_EAT = 3, PURPLE_EAT = 2, BLACK_EAT = 1;
+
+// diameter of balckhole images
+const BLACKHOLE_DIAMETER = 50;
+
+// max number of high scores displayed
+const HIGH_SCORE_NUM = 3;
+
+// radius fo event horizon
+const HORIZON_DIST = 50;
+
+// how far away if the click event from the centre of blackholes
+const CLICK_DIST = 25;
 
 // variables for the timer
 var time = 60, timerOn = 0;
@@ -15,130 +36,181 @@ var time = 60, timerOn = 0;
 // variables for the current level and score
 var score = 200, level = 1;
 
-// array for storing the sprites and
-
+// array for storing the sprites and blackholes
 var sprites = new Array(), blackholes = new Array();
 
-var myScore = document.getElementById("score");
-
+// ids for time intervals
 var refreshIntervalId, blackholeIntervalId, timeoutId;
 
 // called when page loads and sets up event handlers
 window.onload = function() {
+    // set up on click
     document.getElementById("finish").onclick = showStart;
     document.getElementById("start").onclick = showGame;
     document.getElementById("next").onclick = showNext;
     document.getElementById("timerStart").onclick = startCount;
     document.getElementById("timerPause").onclick = stopCount;
     GameArea.canvas.onclick = removeBlackhole;
+    
+    // update and display high scores
     showHighScores();
-
 }
 
-// onclick functions
+// show the game page
 function showGame() {
+    // reset all parameters
     time = 60;
     score = 200;
     level = 1;
+    
+    // display and undisplay elements
     document.getElementById("game-page").style.display = "block";
     document.getElementById("start-page").style.display = "none";
     document.getElementById("level-box").style.display = "none";
+    
+    // display the current level
     document.getElementById("level").innerHTML = level;
+    
+    // initialize game canvas
     GameArea.initializeCanvas();
+    
+    // start the game
     startGame();
+    
+    // start the timer count
     timedCount();
 }
 
+// load the second level
 function showNext() {
+    // hide the level box
     document.getElementById("level-box").style.display = "none";
-    startGame();
+    
+    // only reset the time, keep score and level
     time = 60;
+    
+    // start the second level
+    startGame();
+
+    // start the timer again
     timedCount();
 }
 
+// the function used to sort numerically
 function sortNumber(a,b) {
     return b - a;
 }
 
+// go back to the start page
 function showStart() {
+    // stop generating blacholes under the hood
     clearInterval(blackholeIntervalId);
+    
+    // display high scores
     showHighScores();
     
+    // display and hide elements
     document.getElementById("start-page").style.display = "block";
     document.getElementById("game-page").style.display = "none";
 }
 
+// process and dispaky the high scores
 function showHighScores() {
     var highScores = new Array();
     var highScoreString = "High Scores: <br />";
     var j = 0;
     
+    // set first few high scores to 0 if first time game paly
     if (typeof localStorage[0] == "undefined") {
         for (var i = 0; i < HIGH_SCORE_NUM; i++) {
             localStorage[i] = 0;
         }   
     }
+    
+    // pass all scores from local storage to an array
     for (var i = 0; i < localStorage.length; i++) {
         highScores.push(parseInt(localStorage[i]));
     }
     
+    // push the score if finished the game play
     if (score != 200) {
         highScores.push(score);
     }
     
+    // sort exisitng high scores
     highScores.sort(sortNumber);
 
+    // transfer back the first few high scores
     for (var i = 0; i < HIGH_SCORE_NUM; i++) {
         localStorage[i] = highScores[i];
     }
 
+    // convert all high scores to a single string
     while (j < HIGH_SCORE_NUM) {
         highScoreString += localStorage[j] + "<br />";
         j++;
     }
 
+    // display the high scores
     document.getElementById("high-score").innerHTML = highScoreString;
 }
 
+// start/resume the tiemr
 function startCount() {
     if (!timerOn) {
         timerOn = 1;
         timedCount();
         document.getElementById("timerPause").style.display = "block";
+        
+        // set refresh rate for the game area
         refreshIntervalId = setInterval(updateGameArea, 20);
     }
 }
 
+// pause the tiemr
 function stopCount() {
+    timerOn = 0;
+    
+    // display/hdie elements
     document.getElementById("timerStart").style.display = "block";
     document.getElementById("timerPause").style.display = "none";
+    
+    // stop refreshing the game area and geenrating blackholes
     clearInterval(refreshIntervalId);
     clearTimeout(timeoutId);
-    timerOn = 0;
 }
 
 // timer counts down evert 1 second
 function timedCount() {
+    // display/hdie elements
     document.getElementById("timerStart").style.display = "none";
     document.getElementById("timerPause").style.display = "block";
     document.getElementById("timer").style.display = "block";
     document.getElementById("timer").innerHTML = time + " seconds";
 
+    // timer decrements every 1000 ms
     time--;
     timeoutId = setTimeout(function() { timedCount() }, 1000);
 }
 
+// the main game area initialized using object literal
 var GameArea = {
+    // create the canvas obejct
     canvas : document.createElement("canvas"),
+    
+    // initialize the canvas
     initializeCanvas() {
+        // set the basic parameters
         this.canvas.width = MAXWIDTH;
         this.canvas.height = MAXHEIGHT;
         this.context = this.canvas.getContext("2d");
-        let gamePage = document.getElementById("game-page");
+        
         // insert canvas as the first child of game page
+        var gamePage = document.getElementById("game-page");
         gamePage.insertBefore(this.canvas, gamePage.childNodes[0]);
     },
 
+    // clear the entire canvas
     clearCanvas() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
@@ -414,7 +486,7 @@ function checkSamePosition(list, x, y) {
 function updateGameArea() {
     GameArea.clearCanvas();
 
-    myScore.innerHTML = score;
+    document.getElementById("score").innerHTML = score;
 
     for (var i = 0; i < sprites.length; i++) {
         sprites[i].newPos();
