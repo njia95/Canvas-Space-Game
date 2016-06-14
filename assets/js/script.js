@@ -85,6 +85,7 @@ function showGame() {
 function showNext() {
     // hide the level box
     document.getElementById("level-box").style.display = "none";
+    document.getElementById("info").style.display = "block";
 
     // only reset the time, keep score and level
     time = 60;
@@ -531,15 +532,23 @@ function updateGameArea() {
     }
 
     // when the time is up, stop the game
-    if (time == 0) {
+    if (time == -1) {
         levelUp();
     }
 }
 
 // dsiplay the level box when finishing one level
 function levelUp() {
+    // clearing the array for sprites and blacholes
+    sprites = [];
+    blackholes = [];
+
+    // dispaly/hide elements
+    document.getElementById("info").style.display = "none";
+    document.getElementById("level-box").style.display = "block";
+    document.getElementById("current-score").innerHTML = "Score: " + score;
     document.getElementById("current-level").innerHTML = "Level: " + level;
-    
+
     // update current level accordingly
     if (level == 1) {
         level++;
@@ -550,16 +559,6 @@ function levelUp() {
         document.getElementById("finish").style.display = "block";
     }
 
-    // clearing the array for sprites
-    sprites = [];
-
-    // dispaly/hide elements
-    document.getElementById("timer").style.display = "none";
-    document.getElementById("level-box").style.display = "block";
-    document.getElementById("level").innerHTML = level;
-    document.getElementById("current-score").innerHTML = "Score: " + score;
-    document.getElementById("timerStart").style.display = "none";
-    
     // stop refreshing the canvas and generating blackholes
     clearInterval(refreshIntervalId);
     clearInterval(blackholeIntervalId);
