@@ -5,7 +5,7 @@ const MAXWIDTH = 1000, MAXHEIGHT = 640;
 const BLUE_SCORE = 5, PURPLE_SCORE = 10, BLACK_SCORE = 20;
 
 // how many seocnds to generate a new blackhole in the first level
-const BLUE_FREQUENCY = 16, PURPLE_FREQUENCY = 24, BLACK_FREQUENCY = 30;
+const BLUE_FREQUENCY = 12, PURPLE_FREQUENCY = 26, BLACK_FREQUENCY = 30;
 
 // paths for all three balckhole svg files (public domain)
 const BLUE_IMAGE = "assets/img/blue.svg",
@@ -606,7 +606,7 @@ function generateBlackhole() {
     var x, y;   // x, y position
 
     // blue blackhole
-    if (time % (BLUE_FREQUENCY / level) == 0 && time >= (BLUE_FREQUENCY / level)) {
+    if (time % (BLUE_FREQUENCY / level) == 0) {
         // generate x, y
         do {
             x = generatePosition(MAXWIDTH);
@@ -618,7 +618,7 @@ function generateBlackhole() {
     }
 
     //purple blackhole
-    if (time % (PURPLE_FREQUENCY / level) == 0 && time >= (PURPLE_FREQUENCY / level)) {
+    if (time % (PURPLE_FREQUENCY / level) == 0) {
         // generate x, y
         do {
             x = generatePosition(MAXWIDTH);
@@ -630,7 +630,7 @@ function generateBlackhole() {
     }
 
     // real blackhole
-    if (time % (BLACK_FREQUENCY / level) == 0 && time >= (BLACK_FREQUENCY / level)) {
+    if (time % (BLACK_FREQUENCY / level) == 0) {
         // generate x, y
         do {
             x = generatePosition(MAXWIDTH);
@@ -638,8 +638,7 @@ function generateBlackhole() {
         } while (checkSamePosition(blackholes, x, y));
         // create the blackhole
         blackholes.push(new Blackhole(BLACKHOLE_DIAMETER, BLACKHOLE_DIAMETER,
-        x, y, BLACK_IMAGE,
-        BLACK_PULL_SPEED, BLACK_EAT));
+        x, y, BLACK_IMAGE, BLACK_PULL_SPEED, BLACK_EAT));
     }
 }
 
