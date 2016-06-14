@@ -67,6 +67,7 @@ function showGame() {
     document.getElementById("game-page").style.display = "block";
     document.getElementById("start-page").style.display = "none";
     document.getElementById("level-box").style.display = "none";
+    document.getElementById("info").style.display = "block";
 
     // display the current level
     document.getElementById("level").innerHTML = level;
@@ -111,6 +112,7 @@ function showStart() {
     showHighScores();
 
     // display and hide elements
+    document.getElementById("info").style.display = "block";
     document.getElementById("start-page").style.display = "block";
     document.getElementById("game-page").style.display = "none";
 }
@@ -538,7 +540,7 @@ function updateGameArea() {
     }
 
     // when the time is up, stop the game
-    if (time == -1) {
+    if ((sprites.length == 0 && time < 50) || time == -1) {
         levelUp();
     }
 }
