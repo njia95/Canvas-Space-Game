@@ -492,12 +492,12 @@ function checkSamePosition(list, x, y) {
     var leftMost, rightMost, upMost, downMost;
     for (var i = 0; i < list.length; i++) {
         if (typeof sprites[i] != "undefined") {
-            leftMost = sprites[i].x - 50;
-            rightMost = sprites[i].x + 50;
-            upMost = sprites[i].y - 50;
-            downMost = sprites[i].y + 50;
-            if (leftMost <= x && x <= rightMost && 
-                upMost <= y && y <= downMost) {
+            leftMost = sprites[i].x - 100;
+            rightMost = sprites[i].x + 100;
+            upMost = sprites[i].y - 100;
+            downMost = sprites[i].y + 100;
+            if (x >= leftMost && x <= rightMost && 
+                y >= upMost && y <= downMost) {
                 return true;
             }
         }
@@ -606,8 +606,7 @@ function generateBlackhole() {
     var x, y;   // x, y position
 
     // blue blackhole
-    if (time % (BLUE_FREQUENCY / level) == 0 && time >= (BLUE_FREQUENCY
-        / level)) {
+    if (time % (BLUE_FREQUENCY / level) == 0 && time >= (BLUE_FREQUENCY / level)) {
         // generate x, y
         do {
             x = generatePosition(MAXWIDTH);
@@ -619,8 +618,7 @@ function generateBlackhole() {
     }
 
     //purple blackhole
-    if (time % (PURPLE_FREQUENCY / level) == 0 && time >= (PURPLE_FREQUENCY
-        / level)) {
+    if (time % (PURPLE_FREQUENCY / level) == 0 && time >= (PURPLE_FREQUENCY / level)) {
         // generate x, y
         do {
             x = generatePosition(MAXWIDTH);
@@ -632,8 +630,7 @@ function generateBlackhole() {
     }
 
     // real blackhole
-    if (time % (BLACK_FREQUENCY / level) == 0 && time >= (BLACK_FREQUENCY
-        / level)) {
+    if (time % (BLACK_FREQUENCY / level) == 0 && time >= (BLACK_FREQUENCY / level)) {
         // generate x, y
         do {
             x = generatePosition(MAXWIDTH);
