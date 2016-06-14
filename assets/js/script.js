@@ -13,7 +13,7 @@ const BLUE_IMAGE = "assets/img/blue.svg",
       BLACK_IMAGE = "assets/img/black.svg";
 
 // pull speed of blackhoels
-const BLUE_PULL_SPEED = 11, PURPLE_PULL_SPEED = 7, BLACK_PULL_SPEED = 5;
+const BLUE_PULL_SPEED = 13, PURPLE_PULL_SPEED = 11, BLACK_PULL_SPEED = 7;
 
 // limits of objects each blackhole can take before they disappear
 const BLUE_EAT = 3, PURPLE_EAT = 2, BLACK_EAT = 1;
@@ -248,7 +248,7 @@ class Blackhole extends Component {
     }
     // check if the black has reached its full
     checkLimit() {
-        return this.eaten == this.eatLimit;
+        return this.eaten >= this.eatLimit;
     }
     // increate number of sprites of the blackhole eating
     ateOne() {
@@ -371,7 +371,6 @@ class Sprite extends Component {
             ctx.lineTo(this.x + 10, this.y + 25);
             ctx.fill();
             ctx.closePath();
-
         }
     }
     // change position
@@ -383,27 +382,32 @@ class Sprite extends Component {
                 this.y <= blackholes[i].y + HORIZON_DIST) {
                 var dx = blackholes[i].x - this.x;
                 var dy = blackholes[i].y - this.y;
-                this.speedX = dx / blackholes[i].pullSpeed;
-                this.speedY = dy / blackholes[i].pullSpeed;
+                if (!blackholes[i].checkLimit()) {
+                    this.speedX = dx / blackholes[i].pullSpeed;
+                    this.speedY = dy / blackholes[i].pullSpeed;
+                }
             }
         }
         this.x += this.speedX;
         this.y += this.speedY;
         for (var i = 0; i < blackholes.length; i++) {
-            if (this.x >= blackholes[i].x - 10 &&
-                this.x <= blackholes[i].x + 10 &&
-                this.y >= blackholes[i].y - 10 &&
-                this.y <= blackholes[i].y + 10) {
-                var idx = sprites.indexOf(this);
-                sprites.splice(idx, 1);
-                score -= 50;
+            if (!blackholes[i].checkLimit()) {
+                if (this.x >= blackholes[i].x - 10 &&
+                    this.x <= blackholes[i].x + 10 &&
+                    this.y >= blackholes[i].y - 10 &&
+                    this.y <= blackholes[i].y + 10) {
 
-                blackholes[i].ateOne();
+                    var idx = sprites.indexOf(this);
 
+                    sprites.splice(idx, 1);
+                    score -= 50;
+                    blackholes[i].ateOne();
+                }
             }
         }
         this.check();
     }
+
     // check for boundary conditions
     check() {
         var right = GameArea.canvas.width - this.width;
@@ -489,14 +493,18 @@ function startGame() {
 }
 
 // check if newly generated positions are the same
-function checkSamePosition(list, x, y) {
+function checkSamePosition(x, y, isSprite) {
     var leftMost, rightMost, upMost, downMost;
+
+    var list = isSprite ? sprites : blackholes;
+    var boundary = 100;
+
     for (var i = 0; i < list.length; i++) {
-        if (typeof sprites[i] != "undefined") {
-            leftMost = sprites[i].x - 100;
-            rightMost = sprites[i].x + 100;
-            upMost = sprites[i].y - 100;
-            downMost = sprites[i].y + 100;
+        if (typeof list[i] != "undefined") {
+            leftMost = list[i].x - boundary;
+            rightMost = list[i].x + boundary;
+            upMost = list[i].y - boundary;
+            downMost = list[i].y + boundary;
             if (x >= leftMost && x <= rightMost && 
                 y >= upMost && y <= downMost) {
                 return true;
@@ -506,10 +514,8 @@ function checkSamePosition(list, x, y) {
     return false;
 }
 
-
 // main function for updating the game area
 function updateGameArea() {
-    
     // clear the canvas
     GameArea.clearCanvas();
 
@@ -552,6 +558,7 @@ function levelUp() {
     // update current level accordingly
     if (level == 1) {
         level++;
+        document.getElementById("level").innerHTML = level;
         document.getElementById("next").style.display = "block";
         document.getElementById("finish").style.display = "none";
     } else {
@@ -583,7 +590,7 @@ function generateSprite(currShape, numSpikes) {
     do {
         x = generatePosition(MAXWIDTH);
         y = generatePosition(MAXHEIGHT);
-    } while (checkSamePosition(sprites, x, y));
+    } while (checkSamePosition(x, y, 1));
 
     // setting the values according to the shapes
     var width, height;
@@ -604,13 +611,13 @@ function generateSprite(currShape, numSpikes) {
 function generateBlackhole() {
     var x, y;   // x, y position
 
+    do {
+        x = generatePosition(MAXWIDTH);
+        y = generatePosition(MAXHEIGHT);
+    } while (checkSamePosition(x, y, 0));
+
     // blue blackhole
     if (time % (BLUE_FREQUENCY / level) == 0) {
-        // generate x, y
-        do {
-            x = generatePosition(MAXWIDTH);
-            y = generatePosition(MAXHEIGHT);
-        } while (checkSamePosition(blackholes, x, y));
         // create the blackhole
         blackholes.push(new Blackhole(BLACKHOLE_DIAMETER, BLACKHOLE_DIAMETER,
         x, y, BLUE_IMAGE, BLUE_PULL_SPEED, BLUE_EAT));
@@ -618,11 +625,6 @@ function generateBlackhole() {
 
     //purple blackhole
     if (time % (PURPLE_FREQUENCY / level) == 0) {
-        // generate x, y
-        do {
-            x = generatePosition(MAXWIDTH);
-            y = generatePosition(MAXHEIGHT);
-        } while (checkSamePosition(blackholes, x, y));
         // create the blackhole
         blackholes.push(new Blackhole(BLACKHOLE_DIAMETER, BLACKHOLE_DIAMETER,
         x, y, PURPLE_IMAGE, PURPLE_PULL_SPEED, PURPLE_EAT));
@@ -630,11 +632,6 @@ function generateBlackhole() {
 
     // real blackhole
     if (time % (BLACK_FREQUENCY / level) == 0) {
-        // generate x, y
-        do {
-            x = generatePosition(MAXWIDTH);
-            y = generatePosition(MAXHEIGHT);
-        } while (checkSamePosition(blackholes, x, y));
         // create the blackhole
         blackholes.push(new Blackhole(BLACKHOLE_DIAMETER, BLACKHOLE_DIAMETER,
         x, y, BLACK_IMAGE, BLACK_PULL_SPEED, BLACK_EAT));
